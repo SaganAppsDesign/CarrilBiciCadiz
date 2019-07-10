@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view"
+    android:background="@color/design_default_color_primary">
+
+
+        <item
+            android:id="@+id/switch_tramos_totales"
+            android:icon="@drawable/leyenda_tramos_cadiz"
+            android:title="Tramos totales proyectados" />
+
+        <item
+            android:id="@+id/switch_parkings_actuales"
+            android:icon="@drawable/leyenda_parking_bici_actual"
+            android:title="Estacionamientos"
+            />
+
+        <item
+        android:id="@+id/tramo_interurbano"
+        android:icon="@drawable/leyenda_interurbano"
+        android:title="Tramo interurbano"
+            />
+
+
+    <group android:id="@+id/group1">
+
+
+
+    </group>
+
+</menu>
