@@ -230,7 +230,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         if (granted) {
             mapboxMap!!.getStyle { style -> enableLocationComponent(style) }
         } else {
-            Toast.makeText(this@MainActivity, "No encuentra ubicación", Toast.LENGTH_LONG).show()
+            Toast.makeText(this@MainActivity, "No encuentra ubicación. Espere un momento...", Toast.LENGTH_LONG).show()
             finish()
         }
     }
