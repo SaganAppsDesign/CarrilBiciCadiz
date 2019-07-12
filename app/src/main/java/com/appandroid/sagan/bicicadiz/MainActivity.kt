@@ -322,14 +322,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                     .withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
                             PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
                             PropertyFactory.lineOpacity(.7f),
-                            PropertyFactory.lineWidth(9f),
+                            PropertyFactory.lineWidth(6f),
                             PropertyFactory.lineColor(Color.parseColor("#FFFFFF"))))
 
             style.addLayer(LineLayer("linelayer3", "carril_id2")
                     .withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
                             PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
                             PropertyFactory.lineOpacity(.7f),
-                            PropertyFactory.lineWidth(7f),
+                            PropertyFactory.lineWidth(4f),
                             PropertyFactory.lineColor(Color.parseColor("#0b52d6"))))
 
 

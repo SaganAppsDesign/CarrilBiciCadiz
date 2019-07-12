@@ -99,17 +99,4 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="36dp"
-        android:text="¡Vamos!"
-        android:textColor="@android:color/white"
-        android:textSize="30sp"
-        app:layout_constraintEnd_toEndOf="@+id/imageView3"
-        app:layout_constraintHorizontal_bias="0.494"
-        app:layout_constraintStart_toStartOf="@+id/imageView3"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 </android.support.constraint.ConstraintLayout>
