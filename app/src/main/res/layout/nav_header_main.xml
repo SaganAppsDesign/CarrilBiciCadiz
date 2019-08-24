@@ -16,8 +16,11 @@
         android:id="@+id/imageView"
         android:layout_width="98dp"
         android:layout_height="94dp"
+        android:alpha="0.7"
+        android:background="@color/colorPrimary"
         android:contentDescription="@string/nav_header_desc"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:scaleType="centerCrop"
         app:srcCompat="@drawable/icono_bici_grande" />
 
     <TextView

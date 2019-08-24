@@ -33,18 +33,28 @@
                 android:id="@+id/zoomTolayer"
                 android:layout_width="57dp"
                 android:layout_height="56dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
                 android:clickable="true"
-                app:backgroundTint="@color/design_default_color_primary_dark"
+                app:backgroundTint="@color/colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.938"
-                app:layout_constraintStart_toStartOf="parent"
                 app:srcCompat="@drawable/ic_home_white_24dp">
 
             </android.support.design.widget.FloatingActionButton>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/zoomTolocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="20dp"
+                android:background="@android:color/white"
+                android:clickable="true"
+                app:backgroundTint="@color/colorPrimary"
+                app:layout_constraintBottom_toTopOf="@+id/zoomTolayer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:srcCompat="@drawable/ic_location" />
 
 
         </android.support.constraint.ConstraintLayout>

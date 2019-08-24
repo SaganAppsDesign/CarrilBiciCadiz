@@ -18,7 +18,7 @@ class LocationListeningCallback internal constructor(activity: MainActivity) : L
         // The LocationEngineCallback interface's method which fires when the device's location has changed.
 
 
-        val lastLocation = result.lastLocation
+
 
 
     }

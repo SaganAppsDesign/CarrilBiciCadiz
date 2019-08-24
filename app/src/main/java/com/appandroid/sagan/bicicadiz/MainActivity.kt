@@ -24,6 +24,7 @@ import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.location.LocationComponent
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
+import com.mapbox.mapboxsdk.location.modes.CameraMode
 import com.mapbox.mapboxsdk.location.modes.RenderMode
 import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.MapboxMap
@@ -47,19 +48,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     private var mapboxMap: MapboxMap? = null
     private var permissionsManager: PermissionsManager? = null
     private var locationComponent: LocationComponent? = null
-    // private Button startButton;
-    // private Button stopButton;
-    // variables for calculating and drawing a route
-    //private DirectionsRoute currentRoute;
-    // private static final String TAG = "DirectionsActivity";
-    //private NavigationMapRoute navigationMapRoute;
-    //private Switch tramos_totales, tramos_obras;
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-       this.title = "      - Carril Bici Cádiz -"
 
         Mapbox.getInstance(this, "pk.eyJ1IjoiZGFyZW5hcyIsImEiOiJjanc2ZWhzNmYwMXJ1NGJuamRiZzhteDRiIn0.cfBhxA6KOQJvqqfpkDrT0A")
 
@@ -69,8 +62,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         mapView!!.onCreate(savedInstanceState)
         mapView!!.getMapAsync(this)
 
-        //stopButton = findViewById ( R.id.stopButton );
-        //startButton = findViewById ( R.id.startButton );
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -90,58 +81,49 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
     override fun onMapReady(mapboxMap: MapboxMap) {
 
-        /*    for (int i=0; i < 2; i++) {
-
-            Toast toast = Toast.makeText ( MainActivity.this, "Toca un punto en el mapa para empezar la navegación desde tu ubicación actual", Toast.LENGTH_LONG );
-
-            toast.setGravity ( Gravity.CENTER, 0, 0 );
-
-            toast.show ();
-
-        }*/
-
 
         val zoomTolayer = findViewById<FloatingActionButton>(R.id.zoomTolayer)
+        val zoomTolocation = findViewById<FloatingActionButton>(R.id.zoomTolocation)
 
         this.mapboxMap = mapboxMap
 
         cargarMapa(TRAFFIC_NIGHT)
 
+        mapboxMap.setMaxZoomPreference(17.0)
+        mapboxMap.setMinZoomPreference(11.0)
+
         //Zoom to layer
-        zoomTolayer.setOnClickListener { view ->
+        zoomTolayer.setOnClickListener {
 
             Toast.makeText(this@MainActivity, "Zoom a la capa", Toast.LENGTH_LONG).show()
 
+
             val position = CameraPosition.Builder()
+
                     .target(LatLng(36.514444, -6.279378))
-                    .zoom(11.0)
-                    .tilt(25.0)
+                    .zoom(12.0)
+                    .tilt(0.0)
                     .bearing(0.0)
                     .build()
+
+
+            //mapboxMap.setMinZoomPreference(12.0)
 
             mapboxMap.animateCamera(CameraUpdateFactory
                     .newCameraPosition(position), 5000)
 
-        }
-
-
-        /*  stopButton.setOnClickListener ( view ->
-
-
-        {
-            cargarMapa ( TRAFFIC_NIGHT );
-            navigationMapRoute.removeRoute();
-
-
-            stopButton.setEnabled(false);
-            stopButton.setBackgroundColor (Color.argb (255,215,215,215));
-            startButton.setEnabled(false);
-            startButton.setBackgroundColor (Color.argb (255,215,215,215));
 
         }
 
+        zoomTolocation.setOnClickListener{
 
-        );*/
+
+            Toast.makeText(this@MainActivity, "Zoom a la ubicación actual", Toast.LENGTH_LONG).show()
+
+            // Set the component's camera mode
+            locationComponent!!.cameraMode = CameraMode.TRACKING_GPS_NORTH
+
+        }
 
 
         //Info markers parking bicis
@@ -150,10 +132,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             val screenPoint = mapboxMap.projection.toScreenLocation(point)
 
             val features = mapboxMap.queryRenderedFeatures(screenPoint, "layer-id")
-            if (!features.isEmpty()) {
+            if (features.isNotEmpty()) {
                 val selectedFeature = features[0]
                 val title = selectedFeature.getStringProperty("localizacion")
-                Toast.makeText(this@MainActivity, "Parking bici $title", Toast.LENGTH_SHORT).show()
+
+                if(title.isNullOrEmpty()){
+
+                    Toast.makeText(this@MainActivity, "Estacionamiento bici", Toast.LENGTH_SHORT).show()
+                }
+                else {
+                    Toast.makeText(this@MainActivity, "Estacionamiento $title", Toast.LENGTH_SHORT).show()
+                }
+
+
             }
 
             false
@@ -261,7 +252,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     }
 
 
-    fun cargarMapa(base: String) {
+    private fun cargarMapa(base: String) {
 
 
         mapboxMap!!.setStyle(base
@@ -269,28 +260,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
         ) { style ->
 
-            enableLocationComponent(style)
+                enableLocationComponent(style)
 
-            //  addDestinationIconSymbolLayer(style);
-
-            //   mapboxMap.addOnMapClickListener(MainActivity.this);
-
-
-            //Botón Navigation
-
-            /* startButton.setOnClickListener ( view -> {
-
-
-        NavigationLauncherOptions options = NavigationLauncherOptions.builder()
-                .directionsRoute ( currentRoute )
-                .build ();
-
-        NavigationLauncher.startNavigation (MainActivity.this, options);
-
-
-
-
-    } );*/
 
 
             // Add line Tramos totales importing geojson
@@ -335,8 +306,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
 
 
-
-
             // Add markers parking bicis importing geojson
 
             val parkingBicis = GeoJsonSource("parking_id", loadJsonFromAsset("parking_bicis.geojson"))
@@ -358,90 +327,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     }
 
 
-    /*  private void addDestinationIconSymbolLayer(@NonNull Style loadedMapStyle) {
-
-            loadedMapStyle.addImage("destination-icon-id", BitmapFactory.decodeResource(this.getResources(), R.drawable.mapbox_marker_icon_default));
-            GeoJsonSource geoJsonSource = new GeoJsonSource("destination-source-id");
-            loadedMapStyle.addSource(geoJsonSource);
-
-            SymbolLayer destinationSymbolLayer = new SymbolLayer("destination-symbol-layer-id", "destination-source-id");
-
-            destinationSymbolLayer.withProperties(
-              iconImage("destination-icon-id"),
-              iconAllowOverlap(true),
-              iconIgnorePlacement(true)
-            );
-            loadedMapStyle.addLayer(destinationSymbolLayer);
-          }*/
-
-    /*
-            @SuppressWarnings( {"MissingPermission"})
-            @Override
-            public boolean onMapClick(@NonNull LatLng point) {
-
-                Point destinationPoint = Point.fromLngLat(point.getLongitude(), point.getLatitude());
-                Point originPoint = Point.fromLngLat(locationComponent.getLastKnownLocation().getLongitude(),
-                        locationComponent.getLastKnownLocation().getLatitude());
-
-                GeoJsonSource source = mapboxMap.getStyle().getSourceAs("destination-source-id");
-                if (source != null) {
-                    source.setGeoJson ( Feature.fromGeometry ( destinationPoint ) );
-                }
-
-                getRoute(originPoint, destinationPoint);
-
-                startButton.setEnabled(true);
-                stopButton.setEnabled(true);
-                startButton.setBackgroundResource(R.color.design_default_color_primary_dark);
-                stopButton.setBackgroundResource(R.color.mapbox_navigation_route_layer_congestion_red);
-                return true;
-
-                }
-
-
-                private void getRoute(Point origin, Point destination) {
-                    NavigationRoute.builder(this)
-                            .accessToken(Mapbox.getAccessToken())
-                            .origin(origin)
-                            .destination(destination)
-                            .build()
-                            .getRoute(new Callback<DirectionsResponse> () {
-
-
-                                @Override
-                                public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-                                    // You can get the generic HTTP info about the response
-                                    Log.d(TAG, "Response code: " + response.code());
-                                    if (response.body() == null) {
-                                        Log.e(TAG, "No routes found, make sure you set the right user and access token.");
-                                        return;
-                                    } else if (response.body().routes().size() < 1) {
-                                        Log.e(TAG, "No routes found");
-                                        return;
-                                    }
-
-                                    currentRoute = response.body().routes().get(0);
-
-                                // Draw the route on the map
-                                    if (navigationMapRoute != null) {
-                                        navigationMapRoute.removeRoute();
-                                    } else {
-                                        navigationMapRoute = new NavigationMapRoute(null, mapView, mapboxMap, R.style.NavigationMapRoute);
-                                    }
-                                    navigationMapRoute.addRoute(currentRoute);
-                                }
-
-                                @Override
-                                public void onFailure(Call<DirectionsResponse> call, Throwable t) {
-
-                                    Log.e(TAG, "Error: " + t.getMessage());
-
-                                }
-                            });
-                }
-
-
-*/
 
     //Ubicación actual
 
@@ -467,10 +352,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             locationComponent!!.isLocationComponentEnabled = true
 
             // Set the component's camera mode
-            // locationComponent.setCameraMode(CameraMode.TRACKING);
+            //locationComponent!!.cameraMode = CameraMode.TRACKING
 
             // Set the component's render mode
             locationComponent!!.renderMode = RenderMode.COMPASS
+
         } else {
             permissionsManager = PermissionsManager(this@MainActivity)
             permissionsManager!!.requestLocationPermissions(this@MainActivity)
