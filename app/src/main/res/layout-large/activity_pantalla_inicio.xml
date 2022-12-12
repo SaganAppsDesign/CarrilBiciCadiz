@@ -37,7 +37,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btSiguiente"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -45,7 +45,6 @@
         android:layout_marginBottom="56dp"
         android:background="@drawable/estilo_boton_bienvenida"
         android:fontFamily="@font/montserrat_alternates"
-        android:onClick="clickMap"
         android:text="Mapa de carriles"
         android:textAlignment="textEnd"
         android:textColor="@android:color/white"
@@ -83,7 +82,7 @@
         android:text="¡Disfruta pedaleando!"
         android:textColor="@android:color/white"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintBottom_toTopOf="@+id/btSiguiente"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3"

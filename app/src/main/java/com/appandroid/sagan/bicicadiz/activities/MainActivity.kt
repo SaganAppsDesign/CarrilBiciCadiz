@@ -55,7 +55,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token))
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setContentView(R.layout.activity_main)
 
         mapView = findViewById(R.id.mapView)
         mapView!!.onCreate(savedInstanceState)
