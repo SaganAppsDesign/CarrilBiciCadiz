@@ -5,20 +5,18 @@ import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.navigation.NavigationView
-import androidx.core.app.ActivityCompat
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import com.appandroid.sagan.bicicadiz.Functions
-import com.appandroid.sagan.bicicadiz.Functions.loadJsonFromAsset
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.appandroid.sagan.bicicadiz.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.navigation.NavigationView
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.Mapbox
@@ -50,12 +48,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     private var mapboxMap: MapboxMap? = null
     private var permissionsManager: PermissionsManager? = null
     private var locationComponent: LocationComponent? = null
-
+    private lateinit var carrilBici: GeoJsonSource
+    private lateinit var tramoInterurbano: GeoJsonSource
+    private lateinit var parkingBicis: GeoJsonSource
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Mapbox.getInstance(this, "pk.eyJ1IjoiZGFyZW5hcyIsImEiOiJjbGJrb3ZwOWwwMGcxM3FuMWNqZG5sbnVlIn0.F7SmJXfkGo2xa1-jwdW5fw")
+        Mapbox.getInstance(this, getString(R.string.mapbox_access_token))
 
         setContentView(R.layout.activity_main)
 
@@ -63,10 +63,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         mapView!!.onCreate(savedInstanceState)
         mapView!!.getMapAsync(this)
 
-
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-
 
         val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
@@ -195,64 +193,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     private fun loadMap(base: String) {
         mapboxMap!!.setStyle(base
         ) { style ->
-                enableLocationComponent(style)
-            // Add line Tramos totales importing geojson
 
-            val carrilBici1 = GeoJsonSource("carril_id", loadJsonFromAsset("tramos_totales.geojson"))
-
-            style.addSource(carrilBici1)
-
-            style.addLayer(LineLayer("linelayer1", "carril_id")
-                    .withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
-                            PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
-                            PropertyFactory.lineOpacity(.7f),
-                            PropertyFactory.lineWidth(6f),
-                            PropertyFactory.lineColor(Color.parseColor("#FFFFFF"))))
-
-            style.addLayer(LineLayer("linelayer", "carril_id")
-                    .withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
-                            PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
-                            PropertyFactory.lineOpacity(.7f),
-                            PropertyFactory.lineWidth(4f),
-                            PropertyFactory.lineColor(Color.parseColor("#329221"))))
-
-
-            val tramoInterurbano = GeoJsonSource("carril_id2", loadJsonFromAsset("tramo_interurbano.geojson"))
-
-            style.addSource(tramoInterurbano)
-
-            style.addLayer(LineLayer("linelayer2", "carril_id2")
-                    .withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
-                            PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
-                            PropertyFactory.lineOpacity(.7f),
-                            PropertyFactory.lineWidth(6f),
-                            PropertyFactory.lineColor(Color.parseColor("#FFFFFF"))))
-
-            style.addLayer(LineLayer("linelayer3", "carril_id2")
-                    .withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
-                            PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
-                            PropertyFactory.lineOpacity(.7f),
-                            PropertyFactory.lineWidth(4f),
-                            PropertyFactory.lineColor(Color.parseColor("#0b52d6"))))
-            // Add markers parking bicis importing geojson
-
-            val parkingBicis = GeoJsonSource("parking_id", loadJsonFromAsset("parking_bicis.geojson"))
-            style.addSource(parkingBicis)
-            style.addImage("parking-bicis", BitmapFactory.decodeResource(this.resources,
-                R.drawable.icono_bici_markers
-            ))
-            val symbolLayer = SymbolLayer("layer-id", "parking_id")
-            symbolLayer.withProperties(iconImage("parking-bicis"), iconAllowOverlap(true)
-            )
-            style.addLayer(symbolLayer)
-        }
+            enableLocationComponent(style)
+            carrilStyle(style)
+            tramoInterurbanoStyle(style)
+            parkingStyle(style)
+         }
     }
 
-    private fun enableLocationComponent(estilo: Style) {
+    private fun enableLocationComponent(style: Style) {
         if (PermissionsManager.areLocationPermissionsGranted(this@MainActivity)) {
             locationComponent = mapboxMap!!.locationComponent
-            locationComponent!!.activateLocationComponent(LocationComponentActivationOptions.builder(this@MainActivity, estilo).build())
-            if (ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            locationComponent!!.activateLocationComponent(LocationComponentActivationOptions.builder(this@MainActivity, style).build())
+            if (ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
                 return
             }
             locationComponent!!.isLocationComponentEnabled = true
@@ -297,6 +252,72 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     override fun onLowMemory() {
         super.onLowMemory()
         mapView!!.onLowMemory()
+    }
+
+    fun loadJsonFromAsset(filename: String): String? {
+        return try {
+            val `is` = assets.open(filename)
+            val size = `is`.available()
+            val buffer = ByteArray(size)
+            `is`.read(buffer)
+            `is`.close()
+
+            String(buffer)
+
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+            null
+        }
+    }
+
+    private fun carrilStyle(style: Style){
+        carrilBici = GeoJsonSource("carril_id", loadJsonFromAsset("carril_parking.geojson"))
+
+        style.addSource(carrilBici)
+        style.addLayer(LineLayer("linelayer", "carril_id")
+            .withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
+                PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
+                PropertyFactory.lineOpacity(.7f),
+                PropertyFactory.lineWidth(6f),
+                PropertyFactory.lineColor(Color.parseColor("#FFFFFF"))))
+
+        style.addLayer(LineLayer("linelayer1", "carril_id")
+            .withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
+                PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
+                PropertyFactory.lineOpacity(.7f),
+                PropertyFactory.lineWidth(4f),
+                PropertyFactory.lineColor(Color.parseColor("#329221"))))
+    }
+
+    private fun tramoInterurbanoStyle(style: Style){
+        tramoInterurbano = GeoJsonSource("carril_id2", loadJsonFromAsset("tramo_interurbano.geojson"))
+
+        style.addSource(tramoInterurbano)
+        style.addLayer(LineLayer("linelayer2", "carril_id2")
+            .withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
+                PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
+                PropertyFactory.lineOpacity(.7f),
+                PropertyFactory.lineWidth(6f),
+                PropertyFactory.lineColor(Color.parseColor("#FFFFFF"))))
+
+        style.addLayer(LineLayer("linelayer3", "carril_id2")
+            .withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
+                PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
+                PropertyFactory.lineOpacity(.7f),
+                PropertyFactory.lineWidth(4f),
+                PropertyFactory.lineColor(Color.parseColor("#0b52d6"))))
+    }
+
+    private fun parkingStyle(style: Style){
+        parkingBicis = GeoJsonSource("parking_id", loadJsonFromAsset("parking_bici.geojson"))
+        style.addSource(parkingBicis)
+        style.addImage("parking-bici", BitmapFactory.decodeResource(this.resources,
+            R.drawable.icono_bici_markers
+        ))
+        val symbolLayer = SymbolLayer("layer-id", "parking_id")
+        symbolLayer.withProperties(iconImage("parking-bici"), iconAllowOverlap(true)
+        )
+        style.addLayer(symbolLayer)
     }
 }
 

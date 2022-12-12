@@ -1,6 +1,5 @@
 package com.appandroid.sagan.bicicadiz
 
-
 import com.appandroid.sagan.bicicadiz.activities.MainActivity
 import com.mapbox.android.core.location.LocationEngineCallback
 import com.mapbox.android.core.location.LocationEngineResult
