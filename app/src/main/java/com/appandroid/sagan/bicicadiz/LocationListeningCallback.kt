@@ -14,19 +14,10 @@ class LocationListeningCallback internal constructor(activity: MainActivity) : L
     }
 
     override fun onSuccess(result: LocationEngineResult) {
-
         // The LocationEngineCallback interface's method which fires when the device's location has changed.
-
-
-
-
-
     }
 
     override fun onFailure(exception: Exception) {
-
         // The LocationEngineCallback interface's method which fires when the device's location can not be captured
-
-
     }
 }

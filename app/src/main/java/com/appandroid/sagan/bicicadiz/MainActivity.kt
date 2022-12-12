@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Mapbox.getInstance(this, "pk.eyJ1IjoiZGFyZW5hcyIsImEiOiJjanc2ZWhzNmYwMXJ1NGJuamRiZzhteDRiIn0.cfBhxA6KOQJvqqfpkDrT0A")
+        Mapbox.getInstance(this, R.string.mapbox_access_token.toString())
 
         setContentView(R.layout.activity_main)
 
@@ -74,13 +74,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         toggle.syncState()
         navigationView.setNavigationItemSelectedListener(this)
         navigationView.itemIconTintList = null
-
-
     }
 
-
     override fun onMapReady(mapboxMap: MapboxMap) {
-
 
         val zoomTolayer = findViewById<FloatingActionButton>(R.id.zoomTolayer)
         val zoomTolocation = findViewById<FloatingActionButton>(R.id.zoomTolocation)
@@ -96,8 +92,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         zoomTolayer.setOnClickListener {
 
             Toast.makeText(this@MainActivity, "Zoom a la capa", Toast.LENGTH_LONG).show()
-
-
             val position = CameraPosition.Builder()
 
                     .target(LatLng(36.514444, -6.279378))
@@ -106,26 +100,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                     .bearing(0.0)
                     .build()
 
-
             //mapboxMap.setMinZoomPreference(12.0)
-
             mapboxMap.animateCamera(CameraUpdateFactory
                     .newCameraPosition(position), 5000)
-
-
         }
 
         zoomTolocation.setOnClickListener{
-
-
             Toast.makeText(this@MainActivity, "Zoom a la ubicación actual", Toast.LENGTH_LONG).show()
-
             // Set the component's camera mode
             locationComponent!!.cameraMode = CameraMode.TRACKING_GPS_NORTH
 
         }
-
-
         //Info markers parking bicis
 
         mapboxMap.addOnMapClickListener { point ->
@@ -143,15 +128,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                 else {
                     Toast.makeText(this@MainActivity, "Estacionamiento $title", Toast.LENGTH_SHORT).show()
                 }
-
-
             }
-
             false
-
-        } //cierre
-
-
+        }
     }
 
     override fun onBackPressed() {
@@ -172,28 +151,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         val id = item.itemId
-
-
         if (id == R.id.streets) {
             cargarMapa(MAPBOX_STREETS)
             return true
         }
-
-
-
         if (id == R.id.satellite_streets) {
             cargarMapa(SATELLITE_STREETS)
             return true
         }
-
-
         if (id == R.id.traffic) {
             cargarMapa(TRAFFIC_NIGHT)
             return true
         }
-
-
-
         return super.onOptionsItemSelected(item)
     }
 
@@ -203,8 +172,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
         if (id == R.id.switch_tramos_totales) {
 
-
-        } else if (id == R.id.switch_parkings_actuales) {
+       } else if (id == R.id.switch_parkings_actuales) {
 
         }
 
@@ -230,7 +198,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         permissionsManager!!.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
-
     private fun loadJsonFromAsset(filename: String): String? {
         // Using this method to load in GeoJSON files from the assets folder.
         try {
@@ -240,30 +207,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             `is`.read(buffer)
             `is`.close()
 
-
             return String(buffer)
-
 
         } catch (ex: IOException) {
             ex.printStackTrace()
             return null
         }
-
     }
 
-
     private fun cargarMapa(base: String) {
-
-
         mapboxMap!!.setStyle(base
-
-
         ) { style ->
-
                 enableLocationComponent(style)
-
-
-
             // Add line Tramos totales importing geojson
 
             val carrilBici1 = GeoJsonSource("carril_id", loadJsonFromAsset("tramos_totales.geojson"))
@@ -302,58 +257,28 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                             PropertyFactory.lineOpacity(.7f),
                             PropertyFactory.lineWidth(4f),
                             PropertyFactory.lineColor(Color.parseColor("#0b52d6"))))
-
-
-
-
             // Add markers parking bicis importing geojson
 
             val parkingBicis = GeoJsonSource("parking_id", loadJsonFromAsset("parking_bicis.geojson"))
-
             style.addSource(parkingBicis)
-
             style.addImage("parking-bicis", BitmapFactory.decodeResource(this.resources, R.drawable.icono_bici_markers))
-
             val symbolLayer = SymbolLayer("layer-id", "parking_id")
-
             symbolLayer.withProperties(iconImage("parking-bicis"), iconAllowOverlap(true)
-
-
             )
             style.addLayer(symbolLayer)
-
-        }//cierre estilo
-
+        }
     }
 
-
-
-    //Ubicación actual
-
     private fun enableLocationComponent(estilo: Style) {
-
-
-        // Check if permissions are enabled and if not request
         if (PermissionsManager.areLocationPermissionsGranted(this@MainActivity)) {
-
-            // Get an instance of the component
             locationComponent = mapboxMap!!.locationComponent
-
-            // Activate with options
             locationComponent!!.activateLocationComponent(LocationComponentActivationOptions.builder(this@MainActivity, estilo).build())
-
-            // Enable to make component visible
-            if (ActivityCompat.checkSelfPermission(this@MainActivity,
-                            Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
+            if (ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return
             }
-
             locationComponent!!.isLocationComponentEnabled = true
-
             // Set the component's camera mode
             //locationComponent!!.cameraMode = CameraMode.TRACKING
-
             // Set the component's render mode
             locationComponent!!.renderMode = RenderMode.COMPASS
 
@@ -361,9 +286,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             permissionsManager = PermissionsManager(this@MainActivity)
             permissionsManager!!.requestLocationPermissions(this@MainActivity)
         }
-
     }
-
 
     override fun onStart() {
         super.onStart()
@@ -399,8 +322,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         super.onLowMemory()
         mapView!!.onLowMemory()
     }
-
-
 }
 
 
