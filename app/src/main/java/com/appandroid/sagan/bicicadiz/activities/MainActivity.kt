@@ -113,18 +113,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             locationComponent!!.cameraMode = CameraMode.TRACKING_GPS_NORTH
 
         }
-        //Info markers parking bicis
-
         mapboxMap.addOnMapClickListener { point ->
             val screenPoint = mapboxMap.projection.toScreenLocation(point)
 
             val features = mapboxMap.queryRenderedFeatures(screenPoint, "layer-id")
             if (features.isNotEmpty()) {
                 val selectedFeature = features[0]
-                val title = selectedFeature.getStringProperty("localizacion")
+                val title = selectedFeature.getStringProperty("Name")
 
                 if(title.isNullOrEmpty()){
-
                     Toast.makeText(this@MainActivity, "Estacionamiento bici", Toast.LENGTH_SHORT).show()
                 }
                 else {
@@ -312,7 +309,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         parkingBicis = GeoJsonSource("parking_id", loadJsonFromAsset("parking_bici.geojson"))
         style.addSource(parkingBicis)
         style.addImage("parking-bici", BitmapFactory.decodeResource(this.resources,
-            R.drawable.icono_bici_markers
+            R.drawable.mapbox_marker_icon_default
         ))
         val symbolLayer = SymbolLayer("layer-id", "parking_id")
         symbolLayer.withProperties(iconImage("parking-bici"), iconAllowOverlap(true)
