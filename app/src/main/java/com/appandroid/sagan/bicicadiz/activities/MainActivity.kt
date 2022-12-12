@@ -1,4 +1,4 @@
-package com.appandroid.sagan.bicicadiz
+package com.appandroid.sagan.bicicadiz.activities
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -16,6 +16,9 @@ import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import com.appandroid.sagan.bicicadiz.Functions
+import com.appandroid.sagan.bicicadiz.Functions.loadJsonFromAsset
+import com.appandroid.sagan.bicicadiz.R
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.Mapbox
@@ -43,12 +46,10 @@ import java.io.IOException
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener, NavigationView.OnNavigationItemSelectedListener {
 
-
     private var mapView: MapView? = null
     private var mapboxMap: MapboxMap? = null
     private var permissionsManager: PermissionsManager? = null
     private var locationComponent: LocationComponent? = null
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,7 +70,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
         val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
-        val toggle = ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        val toggle = ActionBarDrawerToggle(this, drawer, toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
         drawer.addDrawerListener(toggle)
         toggle.syncState()
         navigationView.setNavigationItemSelectedListener(this)
@@ -83,7 +87,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
         this.mapboxMap = mapboxMap
 
-        cargarMapa(TRAFFIC_NIGHT)
+        loadMap(TRAFFIC_NIGHT)
 
         mapboxMap.setMaxZoomPreference(17.0)
         mapboxMap.setMinZoomPreference(11.0)
@@ -143,7 +147,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
@@ -152,24 +155,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
         val id = item.itemId
         if (id == R.id.streets) {
-            cargarMapa(MAPBOX_STREETS)
+            loadMap(MAPBOX_STREETS)
             return true
         }
         if (id == R.id.satellite_streets) {
-            cargarMapa(SATELLITE_STREETS)
+            loadMap(SATELLITE_STREETS)
             return true
         }
         if (id == R.id.traffic) {
-            cargarMapa(TRAFFIC_NIGHT)
+            loadMap(TRAFFIC_NIGHT)
             return true
         }
         return super.onOptionsItemSelected(item)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        val id = item.itemId
-
         val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
         drawer.closeDrawer(GravityCompat.START)
         return true
@@ -192,24 +192,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         permissionsManager!!.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
-    private fun loadJsonFromAsset(filename: String): String? {
-        // Using this method to load in GeoJSON files from the assets folder.
-        try {
-            val `is` = assets.open(filename)
-            val size = `is`.available()
-            val buffer = ByteArray(size)
-            `is`.read(buffer)
-            `is`.close()
-
-            return String(buffer)
-
-        } catch (ex: IOException) {
-            ex.printStackTrace()
-            return null
-        }
-    }
-
-    private fun cargarMapa(base: String) {
+    private fun loadMap(base: String) {
         mapboxMap!!.setStyle(base
         ) { style ->
                 enableLocationComponent(style)
@@ -255,7 +238,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
             val parkingBicis = GeoJsonSource("parking_id", loadJsonFromAsset("parking_bicis.geojson"))
             style.addSource(parkingBicis)
-            style.addImage("parking-bicis", BitmapFactory.decodeResource(this.resources, R.drawable.icono_bici_markers))
+            style.addImage("parking-bicis", BitmapFactory.decodeResource(this.resources,
+                R.drawable.icono_bici_markers
+            ))
             val symbolLayer = SymbolLayer("layer-id", "parking_id")
             symbolLayer.withProperties(iconImage("parking-bicis"), iconAllowOverlap(true)
             )
@@ -271,9 +256,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                 return
             }
             locationComponent!!.isLocationComponentEnabled = true
-            // Set the component's camera mode
-            //locationComponent!!.cameraMode = CameraMode.TRACKING
-            // Set the component's render mode
             locationComponent!!.renderMode = RenderMode.COMPASS
 
         } else {

@@ -46,12 +46,11 @@
         android:layout_marginBottom="56dp"
         android:background="@drawable/estilo_boton_bienvenida"
         android:fontFamily="@font/montserrat_alternates"
-        android:onClick="clickMapa"
+        android:onClick="clickMap"
         android:text="Mapa de carriles"
         android:textColor="@android:color/white"
         android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -72,7 +71,7 @@
         app:layout_constraintBottom_toTopOf="@+id/textView3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageView2" />
+       />
 
     <TextView
         android:id="@+id/textView5"

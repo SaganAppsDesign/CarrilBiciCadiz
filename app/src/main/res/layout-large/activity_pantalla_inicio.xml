@@ -45,7 +45,7 @@
         android:layout_marginBottom="56dp"
         android:background="@drawable/estilo_boton_bienvenida"
         android:fontFamily="@font/montserrat_alternates"
-        android:onClick="clickMapa"
+        android:onClick="clickMap"
         android:text="Mapa de carriles"
         android:textAlignment="textEnd"
         android:textColor="@android:color/white"

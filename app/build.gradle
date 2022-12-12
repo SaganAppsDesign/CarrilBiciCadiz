@@ -21,7 +21,7 @@ android {
         applicationId "com.appandroid.sagan.bicicadiz"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 30
+        versionCode 31
         versionName "1.0.2"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
@@ -49,6 +49,14 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    // Firebase
+    implementation platform('com.google.firebase:firebase-bom:29.0.3')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.google.firebase:firebase-storage-ktx'
+    implementation 'com.google.firebase:firebase-database-ktx'
+    implementation 'com.google.firebase:firebase-config-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
  }
 repositories {
     mavenCentral()

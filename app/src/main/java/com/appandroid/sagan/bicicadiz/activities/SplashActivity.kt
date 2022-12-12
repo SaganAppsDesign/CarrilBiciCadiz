@@ -1,21 +1,17 @@
-package com.appandroid.sagan.bicicadiz
+package com.appandroid.sagan.bicicadiz.activities
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import android.view.View
-import android.widget.ProgressBar
-import android.widget.Toast
+import com.appandroid.sagan.bicicadiz.R
 
-class PantallaInicio : AppCompatActivity() {
+class SplashActivity : AppCompatActivity() {
 
-    private val progressBar: ProgressBar? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pantalla_inicio)
     }
-    fun clickMapa (view : View){
-
+    fun clickMap (){
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()

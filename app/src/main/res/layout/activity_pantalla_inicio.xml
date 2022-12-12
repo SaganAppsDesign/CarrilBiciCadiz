@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PantallaInicio">
+    tools:context=".activities.SplashActivity">
 
     <ImageView
         android:id="@+id/imageView2"
@@ -44,7 +44,7 @@
         android:layout_marginBottom="56dp"
         android:background="@drawable/estilo_boton_bienvenida"
         android:fontFamily="@font/montserrat_alternates"
-        android:onClick="clickMapa"
+        android:onClick="clickMap"
         android:text="Mapa de carriles"
         android:textColor="@android:color/white"
         android:textStyle="bold"
