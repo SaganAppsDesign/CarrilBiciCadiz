@@ -15,5 +15,5 @@
     <string name="title_activity_pantalla_inicio">PantallaInicio</string>
     <string name="title_activity_weather">Weather</string>
     <string name="carril_bici_cadiz">Carril Bici Cádiz</string>
-    <string name="mapbox_access_token">pk.eyJ1IjoiZGFyZW5hcyIsImEiOiJjanc2ZWhzNmYwMXJ1NGJuamRiZzhteDRiIn0.cfBhxA6KOQJvqqfpkDrT0A</string>
+    <string name="mapbox_access_token">pk.eyJ1IjoiZGFyZW5hcyIsImEiOiJjbGJrb3ZwOWwwMGcxM3FuMWNqZG5sbnVlIn0.F7SmJXfkGo2xa1-jwdW5fw</string>
 </resources>

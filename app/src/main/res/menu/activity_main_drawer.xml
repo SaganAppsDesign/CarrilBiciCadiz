@@ -4,31 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view"
     android:background="@color/design_default_color_primary">
-
-
-        <item
-            android:id="@+id/switch_tramos_totales"
-            android:icon="@drawable/tramos_ciudad"
-            android:title="Tramos totales proyectados" />
-
-        <item
-            android:id="@+id/tramo_interurbano"
-            android:icon="@drawable/tramo_interurbano"
-            android:title="Tramo interurbano"
-            />
-
-        <item
+         <item
             android:id="@+id/switch_parkings_actuales"
             android:icon="@drawable/leyenda_parking_bici_actual"
             android:title="Estacionamientos"/>
-
-
-
-
-    <group android:id="@+id/group1">
-
-
-
-    </group>
 
 </menu>

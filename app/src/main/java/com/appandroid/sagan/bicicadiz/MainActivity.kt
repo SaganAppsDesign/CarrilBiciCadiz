@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Mapbox.getInstance(this, R.string.mapbox_access_token.toString())
+        Mapbox.getInstance(this, "pk.eyJ1IjoiZGFyZW5hcyIsImEiOiJjbGJrb3ZwOWwwMGcxM3FuMWNqZG5sbnVlIn0.F7SmJXfkGo2xa1-jwdW5fw")
 
         setContentView(R.layout.activity_main)
 
@@ -169,12 +169,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         val id = item.itemId
-
-        if (id == R.id.switch_tramos_totales) {
-
-       } else if (id == R.id.switch_parkings_actuales) {
-
-        }
 
         val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
         drawer.closeDrawer(GravityCompat.START)

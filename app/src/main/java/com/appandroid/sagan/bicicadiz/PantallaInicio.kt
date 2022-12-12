@@ -17,7 +17,6 @@ class PantallaInicio : AppCompatActivity() {
     fun clickMapa (view : View){
 
         val intent = Intent(this, MainActivity::class.java)
-        Toast.makeText(this, "Bienvenidos a la APP Carirril Bici,", Toast.LENGTH_LONG).show()
         startActivity(intent)
         finish()
     }
