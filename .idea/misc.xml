@@ -9,9 +9,14 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Android/carrilBiciCadiz/app/src/main/res/drawable/estilo_boton_bienvenida.xml" value="0.246" />
+        <entry key="..\:/Android/carrilBiciCadiz/app/src/main/res/drawable/side_nav_bar.xml" value="0.2085" />
         <entry key="..\:/Android/carrilBiciCadiz/app/src/main/res/layout-large/activity_pantalla_inicio.xml" value="0.57625" />
         <entry key="..\:/Android/carrilBiciCadiz/app/src/main/res/layout-xlarge/activity_pantalla_inicio.xml" value="0.104296875" />
+        <entry key="..\:/Android/carrilBiciCadiz/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/Android/carrilBiciCadiz/app/src/main/res/layout/activity_pantalla_inicio.xml" value="0.1" />
+        <entry key="..\:/Android/carrilBiciCadiz/app/src/main/res/layout/app_bar_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/Android/carrilBiciCadiz/app/src/main/res/layout/content_main.xml" value="0.264" />
+        <entry key="..\:/Android/carrilBiciCadiz/app/src/main/res/layout/nav_header_main.xml" value="0.25416666666666665" />
         <entry key="..\:/Android/carrilBiciCadiz/app/src/main/res/menu/activity_main_drawer.xml" value="0.12083333333333333" />
         <entry key="..\:/Android/carrilBiciCadiz/app/src/main/res/menu/main.xml" value="0.24010416666666667" />
       </map>

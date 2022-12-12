@@ -8,14 +8,13 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.appandroid.sagan.bicicadiz.R
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
@@ -34,16 +33,15 @@ import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.maps.Style.*
 import com.mapbox.mapboxsdk.style.layers.LineLayer
 import com.mapbox.mapboxsdk.style.layers.Property
-import com.mapbox.mapboxsdk.style.layers.PropertyFactory
-import com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap
-import com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory.*
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import java.io.IOException
 
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener, NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener {
 
+    private lateinit var binding : ActivityMainBinding
     private var mapView: MapView? = null
     private var mapboxMap: MapboxMap? = null
     private var permissionsManager: PermissionsManager? = null
@@ -54,9 +52,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token))
-
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setContentView(R.layout.activity_main)
 
         mapView = findViewById(R.id.mapView)
@@ -65,24 +63,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-
-        val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
-        val navigationView = findViewById<NavigationView>(R.id.nav_view)
-        val toggle = ActionBarDrawerToggle(this, drawer, toolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
-        )
-        drawer.addDrawerListener(toggle)
-        toggle.syncState()
-        navigationView.setNavigationItemSelectedListener(this)
-        navigationView.itemIconTintList = null
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
-
-        val zoomTolayer = findViewById<FloatingActionButton>(R.id.zoomTolayer)
-        val zoomTolocation = findViewById<FloatingActionButton>(R.id.zoomTolocation)
-
         this.mapboxMap = mapboxMap
 
         loadMap(TRAFFIC_NIGHT)
@@ -90,29 +73,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         mapboxMap.setMaxZoomPreference(17.0)
         mapboxMap.setMinZoomPreference(11.0)
 
-        //Zoom to layer
-        zoomTolayer.setOnClickListener {
-
-            Toast.makeText(this@MainActivity, "Zoom a la capa", Toast.LENGTH_LONG).show()
-            val position = CameraPosition.Builder()
-
+        binding.zoomTolayer.setOnClickListener {
+             val position = CameraPosition.Builder()
                     .target(LatLng(36.514444, -6.279378))
                     .zoom(12.0)
                     .tilt(0.0)
                     .bearing(0.0)
                     .build()
-
-            //mapboxMap.setMinZoomPreference(12.0)
             mapboxMap.animateCamera(CameraUpdateFactory
                     .newCameraPosition(position), 5000)
         }
 
-        zoomTolocation.setOnClickListener{
-            Toast.makeText(this@MainActivity, "Zoom a la ubicación actual", Toast.LENGTH_LONG).show()
-            // Set the component's camera mode
-            locationComponent!!.cameraMode = CameraMode.TRACKING_GPS_NORTH
-
+        binding.zoomTolocation.setOnClickListener{
+           locationComponent!!.cameraMode = CameraMode.TRACKING_GPS_NORTH
         }
+
         mapboxMap.addOnMapClickListener { point ->
             val screenPoint = mapboxMap.projection.toScreenLocation(point)
 
@@ -133,13 +108,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     }
 
     override fun onBackPressed() {
-        val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
         }
-    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
@@ -164,11 +133,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
-        drawer.closeDrawer(GravityCompat.START)
-        return true
-    }
 
     override fun onExplanationNeeded(permissionsToExplain: List<String>) {
 
@@ -190,7 +154,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     private fun loadMap(base: String) {
         mapboxMap!!.setStyle(base
         ) { style ->
-
             enableLocationComponent(style)
             carrilStyle(style)
             tramoInterurbanoStyle(style)
@@ -272,18 +235,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
         style.addSource(carrilBici)
         style.addLayer(LineLayer("linelayer", "carril_id")
-            .withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
-                PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
-                PropertyFactory.lineOpacity(.7f),
-                PropertyFactory.lineWidth(6f),
-                PropertyFactory.lineColor(Color.parseColor("#FFFFFF"))))
+            .withProperties(
+                lineCap(Property.LINE_CAP_SQUARE),
+                lineJoin(Property.LINE_JOIN_MITER),
+                lineOpacity(.7f),
+                lineWidth(6f),
+                lineColor(Color.parseColor("#FFFFFF"))
+            ))
 
         style.addLayer(LineLayer("linelayer1", "carril_id")
-            .withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
-                PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
-                PropertyFactory.lineOpacity(.7f),
-                PropertyFactory.lineWidth(4f),
-                PropertyFactory.lineColor(Color.parseColor("#329221"))))
+            .withProperties(
+                lineCap(Property.LINE_CAP_SQUARE),
+                lineJoin(Property.LINE_JOIN_MITER),
+                lineOpacity(.7f),
+                lineWidth(4f),
+                lineColor(Color.parseColor("#329221"))
+            ))
     }
 
     private fun tramoInterurbanoStyle(style: Style){
@@ -291,18 +258,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
         style.addSource(tramoInterurbano)
         style.addLayer(LineLayer("linelayer2", "carril_id2")
-            .withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
-                PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
-                PropertyFactory.lineOpacity(.7f),
-                PropertyFactory.lineWidth(6f),
-                PropertyFactory.lineColor(Color.parseColor("#FFFFFF"))))
+            .withProperties(
+                lineCap(Property.LINE_CAP_SQUARE),
+                lineJoin(Property.LINE_JOIN_MITER),
+                lineOpacity(.7f),
+                lineWidth(6f),
+                lineColor(Color.parseColor("#FFFFFF"))
+            ))
 
         style.addLayer(LineLayer("linelayer3", "carril_id2")
-            .withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
-                PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
-                PropertyFactory.lineOpacity(.7f),
-                PropertyFactory.lineWidth(4f),
-                PropertyFactory.lineColor(Color.parseColor("#0b52d6"))))
+            .withProperties(
+                lineCap(Property.LINE_CAP_SQUARE),
+                lineJoin(Property.LINE_JOIN_MITER),
+                lineOpacity(.7f),
+                lineWidth(4f),
+                lineColor(Color.parseColor("#0b52d6"))
+            ))
     }
 
     private fun parkingStyle(style: Style){
@@ -312,8 +283,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             R.drawable.mapbox_marker_icon_default
         ))
         val symbolLayer = SymbolLayer("layer-id", "parking_id")
-        symbolLayer.withProperties(iconImage("parking-bici"), iconAllowOverlap(true)
-        )
+        symbolLayer.withProperties(iconImage("parking-bici"), iconAllowOverlap(true), iconSize(0.7f))
         style.addLayer(symbolLayer)
     }
 }
