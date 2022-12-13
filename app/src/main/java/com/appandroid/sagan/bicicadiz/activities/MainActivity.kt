@@ -105,10 +105,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                 val title = selectedFeature.getStringProperty(PARKING_LOCATION_NAME)
 
                 if(title.isNullOrEmpty()){
-                    Toast.makeText(this@MainActivity, getString(R.string.estacionamiento_bici), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, getString(R.string.estacionamiento_sin_nombre), Toast.LENGTH_SHORT).show()
                 }
                 else {
-                    Toast.makeText(this@MainActivity,  String.format(getString(R.string.estacionamiento_bici), title) , Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, title , Toast.LENGTH_SHORT).show()
                 }
             }
             false
