@@ -65,7 +65,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         this.mapboxMap = mapboxMap
 
         loadMap(TRAFFIC_NIGHT)
-
         mapboxMap.setMaxZoomPreference(17.0)
         mapboxMap.setMinZoomPreference(11.0)
 
