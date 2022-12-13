@@ -234,7 +234,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                 lineCap(Property.LINE_CAP_SQUARE),
                 lineJoin(Property.LINE_JOIN_MITER),
                 lineOpacity(.7f),
-                lineWidth(6f),
+                lineWidth(8f),
                 lineColor(Color.parseColor("#FFFFFF"))
             ))
 
