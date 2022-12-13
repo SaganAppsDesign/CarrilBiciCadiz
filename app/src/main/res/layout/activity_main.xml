@@ -41,8 +41,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="305dp">
+        tools:layout_editor_absoluteX="-183dp"
+        tools:layout_editor_absoluteY="-155dp">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/zoomTolayer"
@@ -52,10 +52,11 @@
             android:layout_marginBottom="28dp"
             android:clickable="true"
             android:focusable="true"
-            app:backgroundTint="@color/colorPrimary"
+            android:background="@android:color/white"
+            app:backgroundTint="@android:color/holo_green_light"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_home_white_24dp">
+            app:srcCompat="@drawable/geolocalization">
 
         </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
@@ -65,13 +66,13 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="20dp"
-            android:background="@android:color/white"
+            android:background="@android:color/black"
             android:clickable="true"
             android:focusable="true"
-            app:backgroundTint="@color/colorPrimary"
+            app:backgroundTint="@android:color/holo_green_light"
             app:layout_constraintBottom_toTopOf="@+id/zoomTolayer"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_location" />
+            app:srcCompat="@drawable/gps" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
