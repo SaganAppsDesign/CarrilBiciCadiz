@@ -1,9 +1,12 @@
 package com.appandroid.sagan.bicicadiz.activities
 
 import android.Manifest
+import android.content.BroadcastReceiver
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -11,6 +14,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
+import com.appandroid.sagan.bicicadiz.ConnectionReceiver
+import com.appandroid.sagan.bicicadiz.Constants.APARCABICIS_GEO
+import com.appandroid.sagan.bicicadiz.Constants.APARCABICIS_ICON
+import com.appandroid.sagan.bicicadiz.Constants.CARRIL_BICI_GEO
+import com.appandroid.sagan.bicicadiz.Constants.CARRIL_ID
+import com.appandroid.sagan.bicicadiz.Constants.COLOR_BLANCO
+import com.appandroid.sagan.bicicadiz.Constants.LAYER_ID
+import com.appandroid.sagan.bicicadiz.Constants.PARKING_ID
+import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_NAME
 import com.appandroid.sagan.bicicadiz.R
 import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
 import com.mapbox.android.core.permissions.PermissionsListener
@@ -44,8 +56,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     private var permissionsManager: PermissionsManager? = null
     private var locationComponent: LocationComponent? = null
     private lateinit var carrilBici: GeoJsonSource
-    private lateinit var tramoInterurbano: GeoJsonSource
     private lateinit var parkingBicis: GeoJsonSource
+    private var br: BroadcastReceiver = ConnectionReceiver()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +71,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+
+        activeReceiver()
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
@@ -85,17 +99,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
         mapboxMap.addOnMapClickListener { point ->
             val screenPoint = mapboxMap.projection.toScreenLocation(point)
-
-            val features = mapboxMap.queryRenderedFeatures(screenPoint, "layer-id")
+            val features = mapboxMap.queryRenderedFeatures(screenPoint, LAYER_ID)
             if (features.isNotEmpty()) {
                 val selectedFeature = features[0]
-                val title = selectedFeature.getStringProperty("Name")
+                val title = selectedFeature.getStringProperty(PARKING_LOCATION_NAME)
 
                 if(title.isNullOrEmpty()){
-                    Toast.makeText(this@MainActivity, "Estacionamiento bici", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, getString(R.string.estacionamiento_bici), Toast.LENGTH_SHORT).show()
                 }
                 else {
-                    Toast.makeText(this@MainActivity, "Estacionamiento $title", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity,  String.format(getString(R.string.estacionamiento_bici), title) , Toast.LENGTH_SHORT).show()
                 }
             }
             false
@@ -128,16 +141,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         return super.onOptionsItemSelected(item)
     }
 
-
-    override fun onExplanationNeeded(permissionsToExplain: List<String>) {
-
-    }
+    override fun onExplanationNeeded(permissionsToExplain: List<String>) {}
 
     override fun onPermissionResult(granted: Boolean) {
         if (granted) {
             mapboxMap!!.getStyle { style -> enableLocationComponent(style) }
         } else {
-            Toast.makeText(this@MainActivity, "No encuentra ubicación. Espere un momento...", Toast.LENGTH_LONG).show()
+            Toast.makeText(this@MainActivity, getString(R.string.no_ubicacion), Toast.LENGTH_LONG).show()
             finish()
         }
     }
@@ -180,8 +190,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
     override fun onResume() {
         super.onResume()
+        activeReceiver()
         mapView!!.onResume()
-    }
+     }
 
     override fun onPause() {
         super.onPause()
@@ -225,19 +236,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     }
 
     private fun loadCarriles(style: Style){
-        carrilBici = GeoJsonSource("carril_id", loadJsonFromAsset("carril_parking.geojson"))
+        carrilBici = GeoJsonSource(CARRIL_ID, loadJsonFromAsset(CARRIL_BICI_GEO))
 
         style.addSource(carrilBici)
-        style.addLayer(LineLayer("linelayer", "carril_id")
+        style.addLayer(LineLayer("carril_background_layer", CARRIL_ID)
             .withProperties(
                 lineCap(Property.LINE_CAP_SQUARE),
                 lineJoin(Property.LINE_JOIN_MITER),
                 lineOpacity(.7f),
                 lineWidth(8f),
-                lineColor(Color.parseColor("#FFFFFF"))
+                lineColor(Color.parseColor(COLOR_BLANCO))
             ))
 
-        style.addLayer(LineLayer("linelayer1", "carril_id")
+        style.addLayer(LineLayer("carril_layer", CARRIL_ID)
             .withProperties(
                 lineCap(Property.LINE_CAP_SQUARE),
                 lineJoin(Property.LINE_JOIN_MITER),
@@ -248,14 +259,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     }
 
     private fun loadAparcaBicis(style: Style){
-        parkingBicis = GeoJsonSource("parking_id", loadJsonFromAsset("parking_bici.geojson"))
+        parkingBicis = GeoJsonSource(PARKING_ID, loadJsonFromAsset(APARCABICIS_GEO))
         style.addSource(parkingBicis)
-        style.addImage("parking-bici", BitmapFactory.decodeResource(this.resources,
+        style.addImage(APARCABICIS_ICON, BitmapFactory.decodeResource(this.resources,
             R.drawable.mapbox_marker_icon_default
         ))
-        val symbolLayer = SymbolLayer("layer-id", "parking_id")
-        symbolLayer.withProperties(iconImage("parking-bici"), iconAllowOverlap(true), iconSize(0.7f))
+        val symbolLayer = SymbolLayer(LAYER_ID, PARKING_ID)
+        symbolLayer.withProperties(iconImage(APARCABICIS_ICON), iconAllowOverlap(true), iconSize(0.7f))
         style.addLayer(symbolLayer)
+    }
+
+    private fun activeReceiver(){
+        val networkIntentFilter = IntentFilter()
+        networkIntentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
+        registerReceiver(br, networkIntentFilter)
     }
 }
 
