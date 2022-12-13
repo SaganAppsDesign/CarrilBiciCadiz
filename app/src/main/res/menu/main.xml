@@ -6,23 +6,14 @@
         android:orderInCategory="100"
         android:title="Streets"
         app:showAsAction="never" />
-
-
-
-
     <item
         android:id="@+id/satellite_streets"
         android:orderInCategory="100"
         android:title="Satellite Streets"
         app:showAsAction="never" />
-
     <item
         android:id="@+id/traffic"
         android:orderInCategory="100"
         android:title="Traffic night"
         app:showAsAction="never" />
-
-
-
-
 </menu>
