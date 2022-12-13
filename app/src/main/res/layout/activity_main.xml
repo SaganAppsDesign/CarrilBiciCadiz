@@ -15,7 +15,7 @@
     <com.mapbox.mapboxsdk.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="0dp"
-        android:layout_height="686dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintTop_toBottomOf="@+id/include"
@@ -27,39 +27,6 @@
         mapbox:mapbox_cameraTilt="0"
         mapbox:mapbox_cameraZoom="11">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/zoomTolayer"
-                android:layout_width="57dp"
-                android:layout_height="56dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="124dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:backgroundTint="@color/colorPrimary"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:srcCompat="@drawable/ic_home_white_24dp">
-
-            </com.google.android.material.floatingactionbutton.FloatingActionButton>
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/zoomTolocation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="48dp"
-                android:background="@android:color/white"
-                android:clickable="true"
-                android:focusable="true"
-                app:backgroundTint="@color/colorPrimary"
-                app:layout_constraintBottom_toTopOf="@+id/zoomTolayer"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:srcCompat="@drawable/ic_location" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
     </com.mapbox.mapboxsdk.maps.MapView>
 
     <include
@@ -70,5 +37,41 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="305dp">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/zoomTolayer"
+            android:layout_width="57dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="28dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:backgroundTint="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_home_white_24dp">
+
+        </com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/zoomTolocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="20dp"
+            android:background="@android:color/white"
+            android:clickable="true"
+            android:focusable="true"
+            app:backgroundTint="@color/colorPrimary"
+            app:layout_constraintBottom_toTopOf="@+id/zoomTolayer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_location" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

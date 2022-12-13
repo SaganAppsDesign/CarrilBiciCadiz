@@ -11,11 +11,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import com.appandroid.sagan.bicicadiz.R
 import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
-import com.google.android.material.navigation.NavigationView
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.Mapbox
@@ -154,9 +151,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         mapboxMap!!.setStyle(base
         ) { style ->
             enableLocationComponent(style)
-            carrilStyle(style)
-            tramoInterurbanoStyle(style)
-            parkingStyle(style)
+            loadCarriles(style)
+            loadAparcaBicis(style)
          }
     }
 
@@ -229,7 +225,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         }
     }
 
-    private fun carrilStyle(style: Style){
+    private fun loadCarriles(style: Style){
         carrilBici = GeoJsonSource("carril_id", loadJsonFromAsset("carril_parking.geojson"))
 
         style.addSource(carrilBici)
@@ -252,30 +248,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             ))
     }
 
-    private fun tramoInterurbanoStyle(style: Style){
-        tramoInterurbano = GeoJsonSource("carril_id2", loadJsonFromAsset("tramo_interurbano.geojson"))
-
-        style.addSource(tramoInterurbano)
-        style.addLayer(LineLayer("linelayer2", "carril_id2")
-            .withProperties(
-                lineCap(Property.LINE_CAP_SQUARE),
-                lineJoin(Property.LINE_JOIN_MITER),
-                lineOpacity(.7f),
-                lineWidth(6f),
-                lineColor(Color.parseColor("#FFFFFF"))
-            ))
-
-        style.addLayer(LineLayer("linelayer3", "carril_id2")
-            .withProperties(
-                lineCap(Property.LINE_CAP_SQUARE),
-                lineJoin(Property.LINE_JOIN_MITER),
-                lineOpacity(.7f),
-                lineWidth(4f),
-                lineColor(Color.parseColor("#0b52d6"))
-            ))
-    }
-
-    private fun parkingStyle(style: Style){
+    private fun loadAparcaBicis(style: Style){
         parkingBicis = GeoJsonSource("parking_id", loadJsonFromAsset("parking_bici.geojson"))
         style.addSource(parkingBicis)
         style.addImage("parking-bici", BitmapFactory.decodeResource(this.resources,
