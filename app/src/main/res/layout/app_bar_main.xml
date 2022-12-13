@@ -18,18 +18,17 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary"
+            android:background="@android:color/holo_green_light"
             app:popupTheme="@style/AppTheme.PopupOverlay" >
 
             <TextView
                 android:id="@+id/toolbar_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center|center_horizontal"
                 android:fontFamily="@font/montserrat_alternates"
                 android:text="@string/carril_bici_cadiz"
                 android:textAlignment="viewStart"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/colorPrimaryDark"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
