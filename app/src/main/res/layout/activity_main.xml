@@ -49,10 +49,11 @@
             android:id="@+id/zoomTolayer"
             android:layout_width="57dp"
             android:layout_height="56dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="28dp"
             android:background="@android:color/white"
             android:clickable="true"
+            android:contentDescription="@string/app_name"
             android:focusable="true"
             app:backgroundTint="@android:color/holo_green_light"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -65,10 +66,11 @@
             android:id="@+id/zoomTolocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="20dp"
             android:background="@android:color/black"
             android:clickable="true"
+            android:contentDescription="@string/app_name"
             android:focusable="true"
             app:backgroundTint="@android:color/holo_green_light"
             app:layout_constraintBottom_toTopOf="@+id/zoomTolayer"
@@ -93,8 +95,8 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="32dp"
-            android:layout_height="33dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_marginStart="24dp"
             android:layout_marginBottom="40dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -122,6 +124,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView"
             app:srcCompat="@drawable/carril" />
+
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/swAparcabicis"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:minHeight="48dp"
+            android:checked="false"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="@+id/imageView"
+            app:layout_constraintVertical_bias="1.0" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

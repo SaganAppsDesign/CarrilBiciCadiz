@@ -1,6 +1,8 @@
 package com.appandroid.sagan.bicicadiz
 
+import androidx.appcompat.app.AppCompatActivity
+import java.io.IOException
 
-object Functions{
+class Functions: AppCompatActivity() {
 
 }

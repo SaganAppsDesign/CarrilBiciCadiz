@@ -79,8 +79,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         this.mapboxMap = mapboxMap
 
         loadMap(TRAFFIC_NIGHT)
-        mapboxMap.setMaxZoomPreference(17.0)
-        mapboxMap.setMinZoomPreference(11.0)
+        mapboxMap.setMaxZoomPreference(18.0)
+        mapboxMap.setMinZoomPreference(12.0)
 
         binding.zoomTolayer.setOnClickListener {
              val position = CameraPosition.Builder()
@@ -161,7 +161,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         ) { style ->
             enableLocationComponent(style)
             loadCarriles(style)
-            loadAparcaBicis(style)
+            switchAparcaBicis(style)
          }
     }
 
@@ -219,7 +219,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         mapView!!.onLowMemory()
     }
 
-    fun loadJsonFromAsset(filename: String): String? {
+    private fun loadJsonFromAsset(filename: String): String? {
         return try {
             val `is` = assets.open(filename)
             val size = `is`.available()
@@ -236,6 +236,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     }
 
     private fun loadCarriles(style: Style){
+
         carrilBici = GeoJsonSource(CARRIL_ID, loadJsonFromAsset(CARRIL_BICI_GEO))
 
         style.addSource(carrilBici)
@@ -269,11 +270,23 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         style.addLayer(symbolLayer)
     }
 
+    private fun switchAparcaBicis(style: Style){
+        binding.swAparcabicis.setOnCheckedChangeListener{_, isChecked ->
+            if (isChecked) {
+                loadAparcaBicis(style)
+                } else {
+                style.removeLayer(LAYER_ID)
+                style.removeSource(PARKING_ID)
+            }
+        }
+    }
+
     private fun activeReceiver(){
         val networkIntentFilter = IntentFilter()
         networkIntentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
         registerReceiver(br, networkIntentFilter)
     }
+
 }
 
 
