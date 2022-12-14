@@ -128,6 +128,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         val id = item.itemId
         if (id == R.id.streets) {
             loadMap(MAPBOX_STREETS)
+
             return true
         }
         if (id == R.id.satellite_streets) {
@@ -162,6 +163,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             enableLocationComponent(style)
             loadCarriles(style)
             switchAparcaBicis(style)
+            if(binding.swAparcabicis.isChecked){
+                 loadAparcaBicis(style)
+            }
          }
     }
 
@@ -275,9 +279,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             if (isChecked) {
                 loadAparcaBicis(style)
                 } else {
-                style.removeLayer(LAYER_ID)
-                style.removeSource(PARKING_ID)
-            }
+                    if(style.layers.isNotEmpty()){
+                        style.removeLayer(LAYER_ID)
+                        style.removeSource(PARKING_ID)
+                    }
+               }
         }
     }
 
