@@ -10,6 +10,7 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.animation.BounceInterpolator
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -33,6 +34,7 @@ import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.location.LocationComponent
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
+import com.mapbox.mapboxsdk.location.LocationComponentOptions
 import com.mapbox.mapboxsdk.location.modes.CameraMode
 import com.mapbox.mapboxsdk.location.modes.RenderMode
 import com.mapbox.mapboxsdk.maps.MapView
@@ -94,7 +96,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         }
 
         binding.zoomTolocation.setOnClickListener{
-           locationComponent!!.cameraMode = CameraMode.TRACKING_GPS_NORTH
+           locationComponent!!.cameraMode = CameraMode.TRACKING
         }
 
         mapboxMap.addOnMapClickListener { point ->
@@ -172,8 +174,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
     private fun enableLocationComponent(style: Style) {
         if (PermissionsManager.areLocationPermissionsGranted(this@MainActivity)) {
+            val locationComponentOptions = LocationComponentOptions.builder(this)
+                .pulseEnabled(true)
+                .pulseColor(Color.argb(255,159, 237, 254))
+                .pulseAlpha(.100f)
+                .pulseInterpolator(BounceInterpolator())
+                .build()
+
+            val locationComponentActivationOptions = LocationComponentActivationOptions
+                .builder(this, style)
+                .locationComponentOptions(locationComponentOptions)
+                .build()
+
             locationComponent = mapboxMap!!.locationComponent
-            locationComponent!!.activateLocationComponent(LocationComponentActivationOptions.builder(this@MainActivity, style).build())
+            locationComponent!!.activateLocationComponent(locationComponentActivationOptions)
+
             if (ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
