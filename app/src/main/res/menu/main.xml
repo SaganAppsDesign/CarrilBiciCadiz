@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/streets"
-        android:orderInCategory="100"
-        android:title="Streets"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/satellite_streets"
-        android:orderInCategory="100"
-        android:title="Satellite Streets"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/traffic"
-        android:orderInCategory="100"
-        android:title="Traffic night"
-        app:showAsAction="never" />
+    <group android:id="@+id/Streets" >
+        <item
+            android:id="@+id/streets"
+            android:orderInCategory="100"
+            android:title="Streets"
+            app:showAsAction="never" />
+        </group>
+    <group android:id="@+id/Satellite_streets" >
+        <item
+            android:id="@+id/satellite_streets"
+            android:orderInCategory="100"
+            android:title="Satellite Streets"
+            app:showAsAction="never" />
+    </group>
+    <group android:id="@+id/Traffic" >
+        <item
+            android:id="@+id/traffic"
+            android:orderInCategory="100"
+            android:title="Traffic night"
+            app:showAsAction="never" />
+    </group>
 </menu>

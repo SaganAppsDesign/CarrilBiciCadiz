@@ -4,4 +4,9 @@ import androidx.appcompat.app.AppCompatActivity
 
 class Functions: AppCompatActivity() {
 
+
+
+
+
+
 }
