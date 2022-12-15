@@ -10,6 +10,7 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.animation.BounceInterpolator
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -99,6 +100,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
            locationComponent!!.cameraMode = CameraMode.TRACKING
         }
 
+        binding.tvClose.setOnClickListener{
+            binding.clParkingInfo.visibility = View.GONE
+        }
+
         mapboxMap.addOnMapClickListener { point ->
             val screenPoint = mapboxMap.projection.toScreenLocation(point)
             val features = mapboxMap.queryRenderedFeatures(screenPoint, LAYER_ID)
@@ -111,6 +116,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                 }
                 else {
                     Toast.makeText(this@MainActivity, title , Toast.LENGTH_SHORT).show()
+                    binding.clParkingInfo.visibility = View.VISIBLE
+                    binding.tvParkigName.text = title
                 }
             }
             false
