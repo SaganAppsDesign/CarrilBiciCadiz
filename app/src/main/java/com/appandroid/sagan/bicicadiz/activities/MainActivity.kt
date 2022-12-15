@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        mapView = findViewById(R.id.mapView)
+        mapView = binding.mapView
         mapView!!.onCreate(savedInstanceState)
         mapView!!.getMapAsync(this)
 
