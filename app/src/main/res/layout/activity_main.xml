@@ -221,7 +221,7 @@
             android:id="@+id/tvLinkStreetView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="60dp"
+            android:layout_marginBottom="80dp"
             android:fontFamily="@font/montserrat_alternates"
             android:text="Link a Google Street View"
             android:textColor="@android:color/white"
@@ -229,7 +229,9 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/tvPhotoParking"
             app:layout_constraintEnd_toEndOf="@+id/tvPhotoParking"
-            app:layout_constraintStart_toStartOf="@+id/tvPhotoParking" />
+            app:layout_constraintStart_toStartOf="@+id/tvPhotoParking"
+            app:layout_constraintTop_toBottomOf="@+id/tvParkigName"
+            app:layout_constraintVertical_bias="0.903" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
 

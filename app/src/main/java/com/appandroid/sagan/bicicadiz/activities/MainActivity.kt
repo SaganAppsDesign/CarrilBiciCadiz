@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                     binding.clParkingInfo.visibility = View.VISIBLE
                     binding.tvParkigName.text = title
                     binding.tvPhotoParking.loadUrl(photo, 30)
-                    binding.tvPhotoParking.setOnClickListener{
+                    binding.tvParkigName.setOnClickListener{
                         val i = Intent(Intent.ACTION_VIEW)
                         i.data = Uri.parse(streetView)
                         startActivity(i)
