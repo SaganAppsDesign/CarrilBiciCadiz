@@ -12,14 +12,14 @@
         android:layout_height="42dp"
         android:background="@color/colorPrimary"
         android:gravity="center_horizontal"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/ToolbarTheme">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/holo_green_light"
-            app:popupTheme="@style/AppTheme.PopupOverlay" >
+            android:background="@color/floatButtons"
+            app:popupTheme="@style/AppTheme.AppBarOverlay" >
 
             <TextView
                 android:id="@+id/toolbar_title"

@@ -1,7 +1,11 @@
 package com.appandroid.sagan.bicicadiz
 
+import androidx.appcompat.app.AppCompatActivity
 
-object Functions{
+class Functions: AppCompatActivity() {
+
+
+
 
 
 

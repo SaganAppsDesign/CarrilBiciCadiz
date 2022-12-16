@@ -21,7 +21,7 @@ android {
         applicationId "com.appandroid.sagan.bicicadiz"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 32
+        versionCode 35
         versionName "1.0.3"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
@@ -70,6 +70,8 @@ dependencies {
     //Lottie
     def lottieVersion = "3.4.0"
     implementation "com.airbnb.android:lottie:$lottieVersion"
+    //Location
+//    implementation("com.google.android.gms:play-services-location:21.0.1")
  }
 repositories {
     mavenCentral()
