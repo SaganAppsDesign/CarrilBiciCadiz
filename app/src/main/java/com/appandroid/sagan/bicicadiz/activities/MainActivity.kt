@@ -2,11 +2,13 @@ package com.appandroid.sagan.bicicadiz.activities
 
 import android.Manifest
 import android.content.BroadcastReceiver
+import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -25,8 +27,15 @@ import com.appandroid.sagan.bicicadiz.Constants.COLOR_BLANCO
 import com.appandroid.sagan.bicicadiz.Constants.LAYER_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_NAME
+import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_PHOTO
+import com.appandroid.sagan.bicicadiz.Constants.STREET_VIEW_LINK
+import com.appandroid.sagan.bicicadiz.Functions.loadUrl
 import com.appandroid.sagan.bicicadiz.R
 import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.Mapbox
@@ -61,12 +70,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     private lateinit var carrilBici: GeoJsonSource
     private lateinit var parkingBicis: GeoJsonSource
     private var br: BroadcastReceiver = ConnectionReceiver()
+    private var storage = Firebase.storage
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token))
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        auth = Firebase.auth
 
         mapView = binding.mapView
         mapView!!.onCreate(savedInstanceState)
@@ -110,6 +123,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             if (features.isNotEmpty()) {
                 val selectedFeature = features[0]
                 val title = selectedFeature.getStringProperty(PARKING_LOCATION_NAME)
+                val photo = selectedFeature.getStringProperty(PARKING_LOCATION_PHOTO)
+                val streetView = selectedFeature.getStringProperty(STREET_VIEW_LINK)
 
                 if(title.isNullOrEmpty()){
                     Toast.makeText(this@MainActivity, getString(R.string.estacionamiento_sin_nombre), Toast.LENGTH_SHORT).show()
@@ -117,14 +132,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                 else {
                     binding.clParkingInfo.visibility = View.VISIBLE
                     binding.tvParkigName.text = title
-                }
+                    binding.tvPhotoParking.loadUrl(photo, 30)
+                    binding.tvPhotoParking.setOnClickListener{
+                        val i = Intent(Intent.ACTION_VIEW)
+                        i.data = Uri.parse(streetView)
+                        startActivity(i)
+                       }
+                    }
             }
             false
         }
     }
 
-    override fun onBackPressed() {
-        }
+    override fun onBackPressed() {}
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
