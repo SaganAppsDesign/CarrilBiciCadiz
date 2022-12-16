@@ -115,7 +115,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                     Toast.makeText(this@MainActivity, getString(R.string.estacionamiento_sin_nombre), Toast.LENGTH_SHORT).show()
                 }
                 else {
-                    Toast.makeText(this@MainActivity, title , Toast.LENGTH_SHORT).show()
                     binding.clParkingInfo.visibility = View.VISIBLE
                     binding.tvParkigName.text = title
                 }
