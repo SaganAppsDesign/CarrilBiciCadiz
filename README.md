@@ -3,6 +3,7 @@
 - Kotlin code. 
 - DataBinding.
 - Mapbox sdk.
+- Firebase Crashlytics sdk.
 - Lottie.
 - Geojson.
 
