@@ -130,14 +130,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                     Toast.makeText(this@MainActivity, getString(R.string.estacionamiento_sin_nombre), Toast.LENGTH_SHORT).show()
                 }
                 else {
-                    binding.clParkingInfo.visibility = View.VISIBLE
-                    binding.tvParkigName.text = title
-                    binding.tvPhotoParking.loadUrl(photo, 30)
-                    binding.tvParkigName.setOnClickListener{
-                        val i = Intent(Intent.ACTION_VIEW)
-                        i.data = Uri.parse(streetView)
-                        startActivity(i)
-                       }
+                    Toast.makeText(this@MainActivity, title, Toast.LENGTH_SHORT).show()
+//                    binding.clParkingInfo.visibility = View.VISIBLE
+//                    binding.tvParkigName.text = title
+//                    binding.tvPhotoParking.loadUrl(photo, 30)
+//                    binding.tvParkigName.setOnClickListener{
+//                        val i = Intent(Intent.ACTION_VIEW)
+//                        i.data = Uri.parse(streetView)
+//                        startActivity(i)
+//                       }
                     }
             }
             false
