@@ -100,10 +100,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
            locationComponent!!.cameraMode = CameraMode.TRACKING
         }
 
-        binding.tvClose.setOnClickListener{
-            binding.clParkingInfo.visibility = View.GONE
-        }
-
         mapboxMap.addOnMapClickListener { point ->
             val screenPoint = mapboxMap.projection.toScreenLocation(point)
             val features = mapboxMap.queryRenderedFeatures(screenPoint, LAYER_ID)
@@ -115,8 +111,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                     Toast.makeText(this@MainActivity, getString(R.string.estacionamiento_sin_nombre), Toast.LENGTH_SHORT).show()
                 }
                 else {
-                    binding.clParkingInfo.visibility = View.VISIBLE
-                    binding.tvParkigName.text = title
+                    Toast.makeText(this@MainActivity, title, Toast.LENGTH_SHORT).show()
                 }
             }
             false
