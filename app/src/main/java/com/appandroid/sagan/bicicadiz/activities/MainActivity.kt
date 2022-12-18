@@ -113,18 +113,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
            locationComponent!!.cameraMode = CameraMode.TRACKING
         }
 
-        binding.tvClose.setOnClickListener{
-            binding.clParkingInfo.visibility = View.GONE
-        }
-
         mapboxMap.addOnMapClickListener { point ->
             val screenPoint = mapboxMap.projection.toScreenLocation(point)
             val features = mapboxMap.queryRenderedFeatures(screenPoint, LAYER_ID)
             if (features.isNotEmpty()) {
                 val selectedFeature = features[0]
                 val title = selectedFeature.getStringProperty(PARKING_LOCATION_NAME)
-                val photo = selectedFeature.getStringProperty(PARKING_LOCATION_PHOTO)
-                val streetView = selectedFeature.getStringProperty(STREET_VIEW_LINK)
 
                 if(title.isNullOrEmpty()){
                     Toast.makeText(this@MainActivity, getString(R.string.estacionamiento_sin_nombre), Toast.LENGTH_SHORT).show()
@@ -305,7 +299,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             R.drawable.mapbox_marker_icon_default
         ))
         val symbolLayer = SymbolLayer(LAYER_ID, PARKING_ID)
-        symbolLayer.withProperties(iconImage(APARCABICIS_ICON), iconAllowOverlap(true), iconSize(0.7f))
+        symbolLayer.withProperties(iconImage(APARCABICIS_ICON), iconAllowOverlap(true), iconSize(0.9f))
         style.addLayer(symbolLayer)
     }
 
