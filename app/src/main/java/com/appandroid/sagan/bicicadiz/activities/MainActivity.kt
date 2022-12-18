@@ -131,14 +131,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                 }
                 else {
                     Toast.makeText(this@MainActivity, title, Toast.LENGTH_SHORT).show()
-//                    binding.clParkingInfo.visibility = View.VISIBLE
-//                    binding.tvParkigName.text = title
-//                    binding.tvPhotoParking.loadUrl(photo, 30)
-//                    binding.tvParkigName.setOnClickListener{
-//                        val i = Intent(Intent.ACTION_VIEW)
-//                        i.data = Uri.parse(streetView)
-//                        startActivity(i)
-//                       }
                     }
             }
             false
