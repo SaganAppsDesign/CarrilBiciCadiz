@@ -66,16 +66,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     private lateinit var carrilBici: GeoJsonSource
     private lateinit var parkingBicis: GeoJsonSource
     private var br: BroadcastReceiver = ConnectionReceiver()
-    private var storage = Firebase.storage
-    private lateinit var auth: FirebaseAuth
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token))
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        auth = Firebase.auth
 
         mapView = binding.mapView
         mapView!!.onCreate(savedInstanceState)
@@ -153,8 +150,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             loadMap(TRAFFIC_NIGHT)
             return true
         }
-        if (id == R.id.outdoors) {
-            loadMap(OUTDOORS)
+        if (id == R.id.light) {
+            loadCustomMap()
             return true
         }
 
@@ -167,7 +164,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         if (granted) {
             mapboxMap!!.getStyle { style -> enableLocationComponent(style) }
         } else {
-            Toast.makeText(this@MainActivity, getString(R.string.no_ubicacion), Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.no_ubicacion), Toast.LENGTH_LONG).show()
             finish()
         }
     }
@@ -186,10 +183,24 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                  loadAparcaBicis(style)
             }
          }
+       }
+
+    private fun loadCustomMap() {
+        mapboxMap!!.setStyle(Builder().fromUri("mapbox://styles/darenas/ck0xul2h401cx1cmgkpovc27m")) {
+            style ->
+            enableLocationComponent(style)
+            loadCarriles(style)
+            switchAparcaBicis(style)
+            if(binding.swAparcabicis.isChecked){
+                loadAparcaBicis(style)
+            }
+
+        }
+
     }
 
     private fun enableLocationComponent(style: Style) {
-        if (PermissionsManager.areLocationPermissionsGranted(this@MainActivity)) {
+        if (PermissionsManager.areLocationPermissionsGranted(this)) {
             val locationComponentOptions = LocationComponentOptions.builder(this)
                 .pulseEnabled(true)
                 .pulseColor(Color.argb(255,159, 237, 254))
@@ -205,8 +216,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             locationComponent = mapboxMap!!.locationComponent
             locationComponent!!.activateLocationComponent(locationComponentActivationOptions)
 
-            if (ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
                 return
             }
@@ -214,8 +226,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             locationComponent!!.renderMode = RenderMode.COMPASS
 
         } else {
-            permissionsManager = PermissionsManager(this@MainActivity)
-            permissionsManager!!.requestLocationPermissions(this@MainActivity)
+            permissionsManager = PermissionsManager(this)
+            permissionsManager!!.requestLocationPermissions(this)
         }
     }
 
@@ -280,8 +292,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             .withProperties(
                 lineCap(Property.LINE_CAP_SQUARE),
                 lineJoin(Property.LINE_JOIN_MITER),
-                lineOpacity(.7f),
-                lineWidth(8f),
+                lineWidth(9f),
                 lineColor(Color.parseColor(COLOR_BLANCO))
             ))
 
@@ -289,8 +300,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             .withProperties(
                 lineCap(Property.LINE_CAP_SQUARE),
                 lineJoin(Property.LINE_JOIN_MITER),
-                lineOpacity(.7f),
-                lineWidth(4f),
+                lineWidth(5f),
                 lineColor(Color.parseColor("#329221"))
             ))
     }
@@ -330,13 +340,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         val scaleBarOptions = ScaleBarOptions(this)
         scaleBarOptions
             .setTextColor(R.color.colorAccent)
-            .setTextSize(40f)
+            .setTextSize(30f)
             .setBarHeight(15f)
             .setBorderWidth(5f)
             .setMetricUnit(true)
             .setRefreshInterval(15)
-            .setMarginTop(30f)
-            .setMarginLeft(20f)
+            .setMarginTop(35f)
+            .setMarginLeft(25f)
             .setTextBarMargin(15f)
 
         scaleBarPlugin.create(scaleBarOptions)
