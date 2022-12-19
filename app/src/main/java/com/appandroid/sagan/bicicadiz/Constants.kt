@@ -11,6 +11,7 @@ object Constants {
     const val APARCABICIS_GEO = "aparcabicis.geojson"
     const val APARCABICIS_ICON = "aparcabicis_icon"
     const val COLOR_BLANCO = "#FFFFFF"
+    const val APARCA_BICIS = "APARCA-BICIS"
 
 }
 

@@ -22,4 +22,11 @@
             android:title="Traffic night"
             app:showAsAction="never" />
     </group>
+    <group android:id="@+id/Outdoors" >
+        <item
+            android:id="@+id/outdoors"
+            android:orderInCategory="100"
+            android:title="Outdoors"
+            app:showAsAction="never" />
+    </group>
 </menu>

@@ -5,55 +5,62 @@ import android.content.BroadcastReceiver
 import android.content.IntentFilter
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.Point
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.AnticipateOvershootInterpolator
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import com.appandroid.sagan.bicicadiz.ConnectionReceiver
 import com.appandroid.sagan.bicicadiz.Constants.APARCABICIS_GEO
-import com.appandroid.sagan.bicicadiz.Constants.APARCABICIS_ICON
+import com.appandroid.sagan.bicicadiz.Constants.APARCA_BICIS
 import com.appandroid.sagan.bicicadiz.Constants.CARRIL_BICI_GEO
 import com.appandroid.sagan.bicicadiz.Constants.CARRIL_ID
-import com.appandroid.sagan.bicicadiz.Constants.COLOR_BLANCO
 import com.appandroid.sagan.bicicadiz.Constants.LAYER_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_NAME
 import com.appandroid.sagan.bicicadiz.R
 import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 import com.mapbox.android.core.permissions.PermissionsManager
+import com.mapbox.android.gestures.MoveGestureDetector
 import com.mapbox.common.location.Location
-import com.mapbox.geojson.Point
-import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.geojson.Point.fromLngLat
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
-import com.mapbox.mapboxsdk.location.LocationComponent
-import com.mapbox.mapboxsdk.location.modes.CameraMode
-import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.MapboxMap
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
-import com.mapbox.mapboxsdk.maps.Style
-import com.mapbox.mapboxsdk.maps.Style.*
-import com.mapbox.mapboxsdk.style.layers.LineLayer
-import com.mapbox.mapboxsdk.style.layers.Property
-import com.mapbox.mapboxsdk.style.layers.PropertyFactory.*
-import com.mapbox.mapboxsdk.style.layers.SymbolLayer
-import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import com.mapbox.maps.CameraOptions
-import com.mapbox.maps.EdgeInsets
-import com.mapbox.maps.plugin.LocationPuck2D
-import com.mapbox.maps.plugin.animation.MapAnimationOptions
+import com.mapbox.maps.MapInitOptions
+import com.mapbox.maps.MapView
+import com.mapbox.maps.Style.Companion.MAPBOX_STREETS
+import com.mapbox.maps.Style.Companion.OUTDOORS
+import com.mapbox.maps.Style.Companion.SATELLITE
+import com.mapbox.maps.Style.Companion.SATELLITE_STREETS
+import com.mapbox.maps.Style.Companion.TRAFFIC_NIGHT
+import com.mapbox.maps.dsl.cameraOptions
+import com.mapbox.maps.extension.style.expressions.dsl.generated.zoom
+import com.mapbox.maps.extension.style.image.image
+import com.mapbox.maps.extension.style.layers.generated.lineLayer
+import com.mapbox.maps.extension.style.layers.generated.symbolLayer
+import com.mapbox.maps.extension.style.layers.properties.generated.LineCap
+import com.mapbox.maps.extension.style.layers.properties.generated.LineJoin
+import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
+import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
+import com.mapbox.maps.extension.style.style
+import com.mapbox.maps.plugin.animation.CameraAnimatorOptions.Companion.cameraAnimatorOptions
+import com.mapbox.maps.plugin.animation.MapAnimationOptions.Companion.mapAnimationOptions
 import com.mapbox.maps.plugin.animation.camera
+import com.mapbox.maps.plugin.animation.flyTo
+import com.mapbox.maps.plugin.gestures.OnMoveListener
+import com.mapbox.maps.plugin.gestures.addOnMapClickListener
+import com.mapbox.maps.plugin.gestures.gestures
+import com.mapbox.maps.plugin.locationcomponent.OnIndicatorBearingChangedListener
+import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.location
-import com.mapbox.navigation.base.ExperimentalPreviewMapboxNavigationAPI
 import com.mapbox.navigation.base.options.NavigationOptions
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.lifecycle.MapboxNavigationApp
@@ -61,148 +68,100 @@ import com.mapbox.navigation.core.lifecycle.MapboxNavigationObserver
 import com.mapbox.navigation.core.lifecycle.requireMapboxNavigation
 import com.mapbox.navigation.core.trip.session.LocationMatcherResult
 import com.mapbox.navigation.core.trip.session.LocationObserver
-import com.mapbox.navigation.ui.maps.NavigationStyles
+import com.mapbox.navigation.ui.maps.internal.ui.LocationComponent
 import com.mapbox.navigation.ui.maps.location.NavigationLocationProvider
-import java.io.IOException
+import java.security.Permissions
 
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityMainBinding
     private var mapView: MapView? = null
-    private var mapboxMap: MapboxMap? = null
-    private var permissionsManager: PermissionsManager? = null
-    private var locationComponent: LocationComponent? = null
-    private lateinit var carrilBici: GeoJsonSource
-    private lateinit var parkingBicis: GeoJsonSource
+    private var mapboxMap: com.mapbox.maps.MapboxMap? = null
     private var br: BroadcastReceiver = ConnectionReceiver()
-    private var storage = Firebase.storage
-    private lateinit var auth: FirebaseAuth
-    private val navigationLocationProvider = NavigationLocationProvider()
+    private lateinit var locationPermissionHelper: LocationPermissionHelper
 
-
-    private val locationObserver = object : LocationObserver {
-        /**
-         * Invoked as soon as the [Location] is available.
-         */
-        override fun onNewRawLocation(rawLocation: android.location.Location) {
-// Not implemented in this example. However, if you want you can also
-// use this callback to get location updates, but as the name suggests
-// these are raw location updates which are usually noisy.
-        }
-
-        /**
-         * Provides the best possible location update, snapped to the route or
-         * map-matched to the road if possible.
-         */
-        override fun onNewLocationMatcherResult(locationMatcherResult: LocationMatcherResult) {
-            val enhancedLocation = locationMatcherResult.enhancedLocation
-            navigationLocationProvider.changePosition(
-                enhancedLocation,
-                locationMatcherResult.keyPoints,
-            )
-// Invoke this method to move the camera to your current location.
-//            updateCamera(enhancedLocation)
-        }
+    private val onIndicatorBearingChangedListener = OnIndicatorBearingChangedListener {
+        mapView?.getMapboxMap().setCamera(CameraOptions.Builder().bearing(it).build())
     }
+
+    private val onIndicatorPositionChangedListener = OnIndicatorPositionChangedListener {
+        mapView?.getMapboxMap()?.setCamera(CameraOptions.Builder().center(it).build())
+        mapView?.gestures?.focalPoint = mapView?.getMapboxMap()?.pixelForCoordinate(it)
+    }
+
+    private val onMoveListener = object : OnMoveListener {
+        override fun onMoveBegin(detector: MoveGestureDetector) {
+//            onCameraTrackingDismissed()
+        }
+
+        override fun onMove(detector: MoveGestureDetector): Boolean {
+            return false
+        }
+
+        override fun onMoveEnd(detector: MoveGestureDetector) {}
+    }
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Mapbox.getInstance(this, getString(R.string.mapbox_access_token))
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.mapView.getMapboxMap().loadStyleUri(NavigationStyles.NAVIGATION_DAY_STYLE)
 
-
-//        auth = Firebase.auth
-
-//        mapView = binding.mapView
-//        mapView!!.onCreate(savedInstanceState)
-//        mapView!!.getMapAsync(this)
-
+        mapView = binding.mapView
+        loadMap(TRAFFIC_NIGHT)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-
         activeReceiver()
-    }
-
-    val mapboxNavigation: MapboxNavigation by requireMapboxNavigation(
-        onResumedObserver = object : MapboxNavigationObserver {
-            @SuppressLint("MissingPermission")
-            override fun onAttached(mapboxNavigation: MapboxNavigation) {
-                mapboxNavigation.registerLocationObserver(locationObserver)
-                mapboxNavigation.startTripSession()
-            }
-
-            override fun onDetached(mapboxNavigation: MapboxNavigation) {
-                mapboxNavigation.unregisterLocationObserver(locationObserver)
-            }
-        },
-        onInitialize = this::initNavigation
-    )
-
-    private fun initNavigation() {
-        MapboxNavigationApp.setup(
-            NavigationOptions.Builder(this)
-                .accessToken(getString(R.string.mapbox_access_token))
-                .build()
-        )
-// Instantiate the location component which is the key component to fetch location updates.
-        binding.mapView.location.apply {
-            setLocationProvider(navigationLocationProvider)
-// Uncomment this block of code if you want to see a circular puck with arrow.
-//            locationPuck = LocationPuck2D(
-//                bearingImage = ContextCompat.getDrawable(
-//                    this@MainActivity,
-//                    R.drawable.mapbox_navigation_puck_icon
-//                )
-//            )
-// When true, the blue circular puck is shown on the map. If set to false, user
-// location in the form of puck will not be shown on the map.
-            enabled = true
-        }
-    }
-
-    override fun onMapReady(mapboxMap: MapboxMap) {
-        this.mapboxMap = mapboxMap
-
-        loadMap(TRAFFIC_NIGHT)
-        mapboxMap.setMaxZoomPreference(18.0)
-        mapboxMap.setMinZoomPreference(12.0)
 
         binding.zoomTolayer.setOnClickListener {
-             val position = CameraPosition.Builder()
-                    .target(LatLng(36.514444, -6.279378))
-                    .zoom(12.0)
-                    .tilt(0.0)
-                    .bearing(0.0)
-                    .build()
-            mapboxMap.animateCamera(CameraUpdateFactory
-                    .newCameraPosition(position), 5000)
-        }
+            val cameraPosition = CameraOptions.Builder()
+                .center(fromLngLat(-6.279378, 36.514444))
+                .pitch(45.0)
+                .zoom(12.0)
+                .bearing(-17.6)
+                .build()
+            mapView!!.getMapboxMap().setCamera(cameraPosition)
 
-        binding.zoomTolocation.setOnClickListener{
-           locationComponent!!.cameraMode = CameraMode.TRACKING
-        }
-
-        mapboxMap.addOnMapClickListener { point ->
-            val screenPoint = mapboxMap.projection.toScreenLocation(point)
-            val features = mapboxMap.queryRenderedFeatures(screenPoint, LAYER_ID)
-            if (features.isNotEmpty()) {
-                val selectedFeature = features[0]
-                val title = selectedFeature.getStringProperty(PARKING_LOCATION_NAME)
-
-                if(title.isNullOrEmpty()){
-                    Toast.makeText(this@MainActivity, getString(R.string.estacionamiento_sin_nombre), Toast.LENGTH_SHORT).show()
+            mapboxMap?.flyTo(
+                cameraOptions {
+                    zoom(12.0) // Sets the zoom
+                    bearing(180.0) // Rotate the camera
+                    pitch(50.0) // Set the camera pitch
+                },
+                mapAnimationOptions {
+                    duration(7000)
                 }
-                else {
-                    Toast.makeText(this@MainActivity, title, Toast.LENGTH_SHORT).show()
-                    }
-            }
-            false
+            )
         }
+
+//        mapboxMap?.addOnMapClickListener { point ->
+////            val screenPoint = mapboxMap.projection.toScreenLocation(point)
+//            val screenPoint = mapboxMap!!.projectedMetersForCoordinate(point)
+//            val features = mapboxMap.queryRenderedFeatures()
+//            if (features.isNotEmpty()) {
+//                val selectedFeature = features[0]
+//                val title = selectedFeature.getStringProperty(PARKING_LOCATION_NAME)
+//
+//                if(title.isNullOrEmpty()) Toast.makeText(this, getString(R.string.estacionamiento_sin_nombre), Toast.LENGTH_SHORT).show()
+//                else Toast.makeText(this, title, Toast.LENGTH_SHORT).show()
+//            }
+//            false
+//        }
+
+
+//        binding.zoomTolocation.setOnClickListener{
+//            locationComponent!!.cameraMode = CameraMode.TRACKING
+//        }
+
+
     }
+
+
+
+
 
     override fun onBackPressed() {}
 
@@ -228,36 +187,30 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             loadMap(TRAFFIC_NIGHT)
             return true
         }
+        if (id == R.id.outdoors) {
+            loadMap(OUTDOORS)
+            return true
+        }
         return super.onOptionsItemSelected(item)
     }
-
-//    override fun onExplanationNeeded(permissionsToExplain: List<String>) {}
-//
-//    override fun onPermissionResult(granted: Boolean) {
-//        if (granted) {
-//            mapboxMap!!.getStyle { style -> enableLocationComponent(style) }
-//        } else {
-//            Toast.makeText(this@MainActivity, getString(R.string.no_ubicacion), Toast.LENGTH_LONG).show()
-//            finish()
-//        }
-//    }
 
 //    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
 //        permissionsManager!!.onRequestPermissionsResult(requestCode, permissions, grantResults)
 //    }
 
-    private fun loadMap(base: String) {
-        mapboxMap!!.setStyle(base
-        ) { style ->
+//    private fun loadMap(base: String) {
+//        mapboxMap!!.setStyle(base
+//        ) { style ->
 //            enableLocationComponent(style)
-            loadCarriles(style)
-            switchAparcaBicis(style)
-            if(binding.swAparcabicis.isChecked){
-                 loadAparcaBicis(style)
-            }
-         }
-    }
-//
+//            loadCarriles(style)
+//            switchAparcaBicis(style)
+//            if(binding.swAparcabicis.isChecked){
+//                 loadAparcaBicis(style)
+//            }
+//         }
+//    }
+
+
 //    private fun enableLocationComponent(style: Style) {
 //        if (PermissionsManager.areLocationPermissionsGranted(this@MainActivity)) {
 //            val locationComponentOptions = LocationComponentOptions.builder(this)
@@ -289,103 +242,92 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 //        }
 //    }
 
-    override fun onStart() {
-        super.onStart()
-//        mapView!!.onStart()
-    }
+
 
     override fun onResume() {
         super.onResume()
         activeReceiver()
-//        mapView!!.onResume()
-     }
+    }
 
-    override fun onPause() {
-        super.onPause()
-//        mapView!!.onPause()
+    override fun onStart() {
+        super.onStart()
+        mapView?.onStart()
     }
 
     override fun onStop() {
         super.onStop()
-//        mapView!!.onStop()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        mapView!!.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-//        mapView!!.onDestroy()
+        mapView?.onStop()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-//        mapView!!.onLowMemory()
+        mapView?.onLowMemory()
     }
 
-    private fun loadJsonFromAsset(filename: String): String? {
-        return try {
-            val `is` = assets.open(filename)
-            val size = `is`.available()
-            val buffer = ByteArray(size)
-            `is`.read(buffer)
-            `is`.close()
+    override fun onDestroy() {
+        super.onDestroy()
+        mapView?.onDestroy()
+    }
 
-            String(buffer)
-
-        } catch (ex: IOException) {
-            ex.printStackTrace()
-            null
+    private fun loadMap(base: String) {
+        loadCarriles(base)
+        switchAparcaBicis(base)
+        if(binding.swAparcabicis.isChecked){
+            loadCarriles(base)
         }
     }
 
-    private fun loadCarriles(style: Style){
+    private fun loadCarriles(base: String){
+        mapView?.getMapboxMap()?.loadStyle(style (styleUri = base) {
+            //enableLocationComponent(style)
+           +geoJsonSource(id = CARRIL_ID) {
+                url("asset://$CARRIL_BICI_GEO")}
 
-        carrilBici = GeoJsonSource(CARRIL_ID, loadJsonFromAsset(CARRIL_BICI_GEO))
-
-        style.addSource(carrilBici)
-        style.addLayer(LineLayer("carril_background_layer", CARRIL_ID)
-            .withProperties(
-                lineCap(Property.LINE_CAP_SQUARE),
-                lineJoin(Property.LINE_JOIN_MITER),
-                lineOpacity(.7f),
-                lineWidth(8f),
-                lineColor(Color.parseColor(COLOR_BLANCO))
-            ))
-
-        style.addLayer(LineLayer("carril_layer", CARRIL_ID)
-            .withProperties(
-                lineCap(Property.LINE_CAP_SQUARE),
-                lineJoin(Property.LINE_JOIN_MITER),
-                lineOpacity(.7f),
-                lineWidth(4f),
+            +lineLayer("carril_background_layer", CARRIL_ID) {
+                lineColor(Color.parseColor("#ffffff"))
+                lineWidth(8.0)
+                lineCap()
+                lineJoin()
+            }
+            +lineLayer("carril_layer", CARRIL_ID) {
                 lineColor(Color.parseColor("#329221"))
-            ))
+                lineWidth(4.0)
+                lineCap(LineCap.ROUND)
+                lineJoin(LineJoin.ROUND)
+            }
+
+            +image(APARCA_BICIS) {
+                bitmap(BitmapFactory.decodeResource(resources, R.drawable.mapbox_marker_icon_default))
+            }
+            +geoJsonSource(id = PARKING_ID) {
+                url("asset://$APARCABICIS_GEO")}
+
+            +symbolLayer(LAYER_ID, PARKING_ID) {
+                sourceLayer(PARKING_ID)
+                iconImage(APARCA_BICIS)
+                iconAllowOverlap(true)
+                iconSize(0.9)
+            }
+        })
     }
 
-    private fun loadAparcaBicis(style: Style){
-        parkingBicis = GeoJsonSource(PARKING_ID, loadJsonFromAsset(APARCABICIS_GEO))
-        style.addSource(parkingBicis)
-        style.addImage(APARCABICIS_ICON, BitmapFactory.decodeResource(this.resources,
-            R.drawable.mapbox_marker_icon_default
-        ))
-        val symbolLayer = SymbolLayer(LAYER_ID, PARKING_ID)
-        symbolLayer.withProperties(iconImage(APARCABICIS_ICON), iconAllowOverlap(true), iconSize(0.9f))
-        style.addLayer(symbolLayer)
+
+    private fun removeAparcabicis() {
+       mapView?.getMapboxMap()?.getStyle { style ->
+        if (style.styleLayerExists(LAYER_ID)) {
+            style.removeStyleLayer(LAYER_ID)
+        }
+        }
     }
 
-    private fun switchAparcaBicis(style: Style){
+
+    private fun switchAparcaBicis(base: String){
         binding.swAparcabicis.setOnCheckedChangeListener{_, isChecked ->
-            if (isChecked) {
-                loadAparcaBicis(style)
+            if(isChecked) {
+                loadCarriles(base)
                 } else {
-                    if(style.layers.isNotEmpty()){
-                        style.removeLayer(LAYER_ID)
-                        style.removeSource(PARKING_ID)
-                    }
-               }
+                removeAparcabicis()
+            }
         }
     }
 
@@ -395,6 +337,32 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         registerReceiver(br, networkIntentFilter)
     }
 
+    private fun animateCameraDelayed() {
+        binding.mapView.camera.apply {
+            val bearing = createBearingAnimator(cameraAnimatorOptions(-45.0)) {
+                duration = 4000
+                interpolator = AccelerateDecelerateInterpolator()
+            }
+            val zoom = createZoomAnimator(
+                cameraAnimatorOptions(14.0) {
+                    startValue(3.0)
+                }
+            ) {
+                duration = 4000
+                interpolator = AccelerateDecelerateInterpolator()
+            }
+            val pitch = createPitchAnimator(
+                cameraAnimatorOptions(55.0) {
+                    startValue(0.0)
+                }
+            ) {
+                duration = 4000
+                interpolator = AccelerateDecelerateInterpolator()
+            }
+
+            playAnimatorsSequentially(zoom, pitch, bearing)
+        }
+    }
 }
 
 

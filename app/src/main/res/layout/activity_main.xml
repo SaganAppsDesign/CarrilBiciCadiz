@@ -25,7 +25,7 @@
         mapbox:mapbox_cameraTargetLat="36.514444"
         mapbox:mapbox_cameraTargetLng="-6.279378"
         mapbox:mapbox_cameraTilt="0"
-        mapbox:mapbox_cameraZoom="11">
+        mapbox:mapbox_cameraZoom="12">
     </com.mapbox.maps.MapView>
 
     <include
@@ -86,7 +86,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="114dp"
         android:layout_height="160dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="52dp"
         android:layout_marginBottom="32dp"
         android:alpha="1"
         android:background="@drawable/round_corner"
@@ -155,7 +155,7 @@
             android:layout_height="33dp"
             android:layout_marginTop="9dp"
             android:layout_marginBottom="12dp"
-            android:checked="false"
+            android:checked="true"
             android:minHeight="48dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
