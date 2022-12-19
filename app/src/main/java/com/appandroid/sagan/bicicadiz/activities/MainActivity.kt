@@ -2,17 +2,14 @@ package com.appandroid.sagan.bicicadiz.activities
 
 import android.Manifest
 import android.content.BroadcastReceiver
-import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.ConnectivityManager
-import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.view.animation.BounceInterpolator
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -27,9 +24,6 @@ import com.appandroid.sagan.bicicadiz.Constants.COLOR_BLANCO
 import com.appandroid.sagan.bicicadiz.Constants.LAYER_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_NAME
-import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_PHOTO
-import com.appandroid.sagan.bicicadiz.Constants.STREET_VIEW_LINK
-import com.appandroid.sagan.bicicadiz.Functions.loadUrl
 import com.appandroid.sagan.bicicadiz.R
 import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -57,6 +51,8 @@ import com.mapbox.mapboxsdk.style.layers.Property
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory.*
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
+import com.mapbox.pluginscalebar.ScaleBarOptions
+import com.mapbox.pluginscalebar.ScaleBarPlugin
 import java.io.IOException
 
 
@@ -121,14 +117,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                 val title = selectedFeature.getStringProperty(PARKING_LOCATION_NAME)
 
                 if(title.isNullOrEmpty()){
-                    Toast.makeText(this@MainActivity, getString(R.string.estacionamiento_sin_nombre), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.estacionamiento_sin_nombre), Toast.LENGTH_SHORT).show()
                 }
                 else {
-                    Toast.makeText(this@MainActivity, title, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, title, Toast.LENGTH_SHORT).show()
                     }
             }
             false
         }
+
+        scaleBar(mapView, mapboxMap)
     }
 
     override fun onBackPressed() {}
@@ -155,6 +153,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             loadMap(TRAFFIC_NIGHT)
             return true
         }
+        if (id == R.id.outdoors) {
+            loadMap(OUTDOORS)
+            return true
+        }
+
         return super.onOptionsItemSelected(item)
     }
 
@@ -322,6 +325,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         registerReceiver(br, networkIntentFilter)
     }
 
+    private fun scaleBar(mapView: MapView?, mapBoxMap: MapboxMap){
+        val scaleBarPlugin = ScaleBarPlugin(mapView!!, mapBoxMap)
+        val scaleBarOptions = ScaleBarOptions(this)
+        scaleBarOptions
+            .setTextColor(R.color.colorAccent)
+            .setTextSize(40f)
+            .setBarHeight(15f)
+            .setBorderWidth(5f)
+            .setMetricUnit(true)
+            .setRefreshInterval(15)
+            .setMarginTop(30f)
+            .setMarginLeft(20f)
+            .setTextBarMargin(15f)
+
+        scaleBarPlugin.create(scaleBarOptions)
+    }
 }
 
 
