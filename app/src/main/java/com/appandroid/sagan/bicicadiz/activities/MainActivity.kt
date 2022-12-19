@@ -1,23 +1,18 @@
 package com.appandroid.sagan.bicicadiz.activities
 
-import android.Manifest
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
-import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.ConnectivityManager
-import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.view.animation.BounceInterpolator
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.appandroid.sagan.bicicadiz.ConnectionReceiver
 import com.appandroid.sagan.bicicadiz.Constants.APARCABICIS_GEO
 import com.appandroid.sagan.bicicadiz.Constants.APARCABICIS_ICON
@@ -27,26 +22,21 @@ import com.appandroid.sagan.bicicadiz.Constants.COLOR_BLANCO
 import com.appandroid.sagan.bicicadiz.Constants.LAYER_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_NAME
-import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_PHOTO
-import com.appandroid.sagan.bicicadiz.Constants.STREET_VIEW_LINK
-import com.appandroid.sagan.bicicadiz.Functions.loadUrl
 import com.appandroid.sagan.bicicadiz.R
 import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
+import com.mapbox.common.location.Location
+import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.location.LocationComponent
-import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
-import com.mapbox.mapboxsdk.location.LocationComponentOptions
 import com.mapbox.mapboxsdk.location.modes.CameraMode
-import com.mapbox.mapboxsdk.location.modes.RenderMode
 import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
@@ -57,10 +47,26 @@ import com.mapbox.mapboxsdk.style.layers.Property
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory.*
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
+import com.mapbox.maps.CameraOptions
+import com.mapbox.maps.EdgeInsets
+import com.mapbox.maps.plugin.LocationPuck2D
+import com.mapbox.maps.plugin.animation.MapAnimationOptions
+import com.mapbox.maps.plugin.animation.camera
+import com.mapbox.maps.plugin.locationcomponent.location
+import com.mapbox.navigation.base.ExperimentalPreviewMapboxNavigationAPI
+import com.mapbox.navigation.base.options.NavigationOptions
+import com.mapbox.navigation.core.MapboxNavigation
+import com.mapbox.navigation.core.lifecycle.MapboxNavigationApp
+import com.mapbox.navigation.core.lifecycle.MapboxNavigationObserver
+import com.mapbox.navigation.core.lifecycle.requireMapboxNavigation
+import com.mapbox.navigation.core.trip.session.LocationMatcherResult
+import com.mapbox.navigation.core.trip.session.LocationObserver
+import com.mapbox.navigation.ui.maps.NavigationStyles
+import com.mapbox.navigation.ui.maps.location.NavigationLocationProvider
 import java.io.IOException
 
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener {
+class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var binding : ActivityMainBinding
     private var mapView: MapView? = null
@@ -72,23 +78,90 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     private var br: BroadcastReceiver = ConnectionReceiver()
     private var storage = Firebase.storage
     private lateinit var auth: FirebaseAuth
+    private val navigationLocationProvider = NavigationLocationProvider()
+
+
+    private val locationObserver = object : LocationObserver {
+        /**
+         * Invoked as soon as the [Location] is available.
+         */
+        override fun onNewRawLocation(rawLocation: android.location.Location) {
+// Not implemented in this example. However, if you want you can also
+// use this callback to get location updates, but as the name suggests
+// these are raw location updates which are usually noisy.
+        }
+
+        /**
+         * Provides the best possible location update, snapped to the route or
+         * map-matched to the road if possible.
+         */
+        override fun onNewLocationMatcherResult(locationMatcherResult: LocationMatcherResult) {
+            val enhancedLocation = locationMatcherResult.enhancedLocation
+            navigationLocationProvider.changePosition(
+                enhancedLocation,
+                locationMatcherResult.keyPoints,
+            )
+// Invoke this method to move the camera to your current location.
+//            updateCamera(enhancedLocation)
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token))
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.mapView.getMapboxMap().loadStyleUri(NavigationStyles.NAVIGATION_DAY_STYLE)
 
-        auth = Firebase.auth
 
-        mapView = binding.mapView
-        mapView!!.onCreate(savedInstanceState)
-        mapView!!.getMapAsync(this)
+//        auth = Firebase.auth
+
+//        mapView = binding.mapView
+//        mapView!!.onCreate(savedInstanceState)
+//        mapView!!.getMapAsync(this)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
         activeReceiver()
+    }
+
+    val mapboxNavigation: MapboxNavigation by requireMapboxNavigation(
+        onResumedObserver = object : MapboxNavigationObserver {
+            @SuppressLint("MissingPermission")
+            override fun onAttached(mapboxNavigation: MapboxNavigation) {
+                mapboxNavigation.registerLocationObserver(locationObserver)
+                mapboxNavigation.startTripSession()
+            }
+
+            override fun onDetached(mapboxNavigation: MapboxNavigation) {
+                mapboxNavigation.unregisterLocationObserver(locationObserver)
+            }
+        },
+        onInitialize = this::initNavigation
+    )
+
+    private fun initNavigation() {
+        MapboxNavigationApp.setup(
+            NavigationOptions.Builder(this)
+                .accessToken(getString(R.string.mapbox_access_token))
+                .build()
+        )
+// Instantiate the location component which is the key component to fetch location updates.
+        binding.mapView.location.apply {
+            setLocationProvider(navigationLocationProvider)
+// Uncomment this block of code if you want to see a circular puck with arrow.
+//            locationPuck = LocationPuck2D(
+//                bearingImage = ContextCompat.getDrawable(
+//                    this@MainActivity,
+//                    R.drawable.mapbox_navigation_puck_icon
+//                )
+//            )
+// When true, the blue circular puck is shown on the map. If set to false, user
+// location in the form of puck will not be shown on the map.
+            enabled = true
+        }
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
@@ -158,25 +231,25 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onExplanationNeeded(permissionsToExplain: List<String>) {}
+//    override fun onExplanationNeeded(permissionsToExplain: List<String>) {}
+//
+//    override fun onPermissionResult(granted: Boolean) {
+//        if (granted) {
+//            mapboxMap!!.getStyle { style -> enableLocationComponent(style) }
+//        } else {
+//            Toast.makeText(this@MainActivity, getString(R.string.no_ubicacion), Toast.LENGTH_LONG).show()
+//            finish()
+//        }
+//    }
 
-    override fun onPermissionResult(granted: Boolean) {
-        if (granted) {
-            mapboxMap!!.getStyle { style -> enableLocationComponent(style) }
-        } else {
-            Toast.makeText(this@MainActivity, getString(R.string.no_ubicacion), Toast.LENGTH_LONG).show()
-            finish()
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        permissionsManager!!.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
+//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+//        permissionsManager!!.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//    }
 
     private fun loadMap(base: String) {
         mapboxMap!!.setStyle(base
         ) { style ->
-            enableLocationComponent(style)
+//            enableLocationComponent(style)
             loadCarriles(style)
             switchAparcaBicis(style)
             if(binding.swAparcabicis.isChecked){
@@ -184,57 +257,57 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             }
          }
     }
-
-    private fun enableLocationComponent(style: Style) {
-        if (PermissionsManager.areLocationPermissionsGranted(this@MainActivity)) {
-            val locationComponentOptions = LocationComponentOptions.builder(this)
-                .pulseEnabled(true)
-                .pulseColor(Color.argb(255,159, 237, 254))
-                .pulseAlpha(.100f)
-                .pulseInterpolator(BounceInterpolator())
-                .build()
-
-            val locationComponentActivationOptions = LocationComponentActivationOptions
-                .builder(this, style)
-                .locationComponentOptions(locationComponentOptions)
-                .build()
-
-            locationComponent = mapboxMap!!.locationComponent
-            locationComponent!!.activateLocationComponent(locationComponentActivationOptions)
-
-            if (ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-                return
-            }
-            locationComponent!!.isLocationComponentEnabled = true
-            locationComponent!!.renderMode = RenderMode.COMPASS
-
-        } else {
-            permissionsManager = PermissionsManager(this@MainActivity)
-            permissionsManager!!.requestLocationPermissions(this@MainActivity)
-        }
-    }
+//
+//    private fun enableLocationComponent(style: Style) {
+//        if (PermissionsManager.areLocationPermissionsGranted(this@MainActivity)) {
+//            val locationComponentOptions = LocationComponentOptions.builder(this)
+//                .pulseEnabled(true)
+//                .pulseColor(Color.argb(255,159, 237, 254))
+//                .pulseAlpha(.100f)
+//                .pulseInterpolator(BounceInterpolator())
+//                .build()
+//
+//            val locationComponentActivationOptions = LocationComponentActivationOptions
+//                .builder(this, style)
+//                .locationComponentOptions(locationComponentOptions)
+//                .build()
+//
+//            locationComponent = mapboxMap!!.locationComponent
+//            locationComponent!!.activateLocationComponent(locationComponentActivationOptions)
+//
+//            if (ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.ACCESS_FINE_LOCATION)
+//                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
+//                != PackageManager.PERMISSION_GRANTED) {
+//                return
+//            }
+//            locationComponent!!.isLocationComponentEnabled = true
+//            locationComponent!!.renderMode = RenderMode.COMPASS
+//
+//        } else {
+//            permissionsManager = PermissionsManager(this@MainActivity)
+//            permissionsManager!!.requestLocationPermissions(this@MainActivity)
+//        }
+//    }
 
     override fun onStart() {
         super.onStart()
-        mapView!!.onStart()
+//        mapView!!.onStart()
     }
 
     override fun onResume() {
         super.onResume()
         activeReceiver()
-        mapView!!.onResume()
+//        mapView!!.onResume()
      }
 
     override fun onPause() {
         super.onPause()
-        mapView!!.onPause()
+//        mapView!!.onPause()
     }
 
     override fun onStop() {
         super.onStop()
-        mapView!!.onStop()
+//        mapView!!.onStop()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -244,12 +317,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
     override fun onDestroy() {
         super.onDestroy()
-        mapView!!.onDestroy()
+//        mapView!!.onDestroy()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        mapView!!.onLowMemory()
+//        mapView!!.onLowMemory()
     }
 
     private fun loadJsonFromAsset(filename: String): String? {

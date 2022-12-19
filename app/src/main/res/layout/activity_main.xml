@@ -12,7 +12,7 @@
     android:id="@+id/activity_main"
     tools:context=".activities.MainActivity">
 
-    <com.mapbox.mapboxsdk.maps.MapView
+    <com.mapbox.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -26,8 +26,7 @@
         mapbox:mapbox_cameraTargetLng="-6.279378"
         mapbox:mapbox_cameraTilt="0"
         mapbox:mapbox_cameraZoom="11">
-
-    </com.mapbox.mapboxsdk.maps.MapView>
+    </com.mapbox.maps.MapView>
 
     <include
         android:id="@+id/include"
