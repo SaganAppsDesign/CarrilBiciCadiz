@@ -5,6 +5,8 @@
     <color name="colorAccent">#FFFFFF</color>
     <color name="backgroundLegend">#52B6E59E</color>
     <color name="floatButtons">#B6E59E</color>
+    <color name="orange">#F5B041</color>
+    <color name="red">#E74C3C</color>
 </resources>
 
 

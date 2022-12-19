@@ -163,61 +163,6 @@
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clParkingInfo"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/round_corner"
-        android:padding="10dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include"
-        tools:visibility="visible">
-
-        <ImageView
-            android:id="@+id/tvClose"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@+id/tvParkigName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
-            app:srcCompat="@drawable/close" />
-
-        <TextView
-            android:id="@+id/tvParkigName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/background_text_info"
-            android:fontFamily="@font/montserrat_alternates"
-            android:padding="5dp"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            app:layout_constraintBottom_toTopOf="@+id/tvPhotoParking"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Aparcabicis Campo del SUR Aparcabicis Campo del SUR Aparcabicis Campo del SURAparcabicis Campo del SUR" />
-
-        <ImageView
-            android:id="@+id/tvPhotoParking"
-            android:layout_width="169dp"
-            android:layout_height="125dp"
-            android:layout_marginBottom="8dp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvParkigName"
-            app:srcCompat="@drawable/carrilbici" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

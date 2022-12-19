@@ -10,7 +10,6 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.view.animation.BounceInterpolator
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +26,10 @@ import com.appandroid.sagan.bicicadiz.Constants.PARKING_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_NAME
 import com.appandroid.sagan.bicicadiz.R
 import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.Mapbox
@@ -48,6 +51,8 @@ import com.mapbox.mapboxsdk.style.layers.Property
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory.*
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
+import com.mapbox.pluginscalebar.ScaleBarOptions
+import com.mapbox.pluginscalebar.ScaleBarPlugin
 import java.io.IOException
 
 
@@ -61,12 +66,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     private lateinit var carrilBici: GeoJsonSource
     private lateinit var parkingBicis: GeoJsonSource
     private var br: BroadcastReceiver = ConnectionReceiver()
+    private var storage = Firebase.storage
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token))
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        auth = Firebase.auth
 
         mapView = binding.mapView
         mapView!!.onCreate(savedInstanceState)
@@ -100,10 +109,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
            locationComponent!!.cameraMode = CameraMode.TRACKING
         }
 
-        binding.tvClose.setOnClickListener{
-            binding.clParkingInfo.visibility = View.GONE
-        }
-
         mapboxMap.addOnMapClickListener { point ->
             val screenPoint = mapboxMap.projection.toScreenLocation(point)
             val features = mapboxMap.queryRenderedFeatures(screenPoint, LAYER_ID)
@@ -112,19 +117,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                 val title = selectedFeature.getStringProperty(PARKING_LOCATION_NAME)
 
                 if(title.isNullOrEmpty()){
-                    Toast.makeText(this@MainActivity, getString(R.string.estacionamiento_sin_nombre), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.estacionamiento_sin_nombre), Toast.LENGTH_SHORT).show()
                 }
                 else {
-                    binding.clParkingInfo.visibility = View.VISIBLE
-                    binding.tvParkigName.text = title
-                }
+                    Toast.makeText(this, title, Toast.LENGTH_SHORT).show()
+                    }
             }
             false
         }
+
+        scaleBar(mapView, mapboxMap)
     }
 
-    override fun onBackPressed() {
-        }
+    override fun onBackPressed() {}
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
@@ -148,6 +153,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             loadMap(TRAFFIC_NIGHT)
             return true
         }
+        if (id == R.id.outdoors) {
+            loadMap(OUTDOORS)
+            return true
+        }
+
         return super.onOptionsItemSelected(item)
     }
 
@@ -292,7 +302,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             R.drawable.mapbox_marker_icon_default
         ))
         val symbolLayer = SymbolLayer(LAYER_ID, PARKING_ID)
-        symbolLayer.withProperties(iconImage(APARCABICIS_ICON), iconAllowOverlap(true), iconSize(0.7f))
+        symbolLayer.withProperties(iconImage(APARCABICIS_ICON), iconAllowOverlap(true), iconSize(0.9f))
         style.addLayer(symbolLayer)
     }
 
@@ -315,6 +325,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         registerReceiver(br, networkIntentFilter)
     }
 
+    private fun scaleBar(mapView: MapView?, mapBoxMap: MapboxMap){
+        val scaleBarPlugin = ScaleBarPlugin(mapView!!, mapBoxMap)
+        val scaleBarOptions = ScaleBarOptions(this)
+        scaleBarOptions
+            .setTextColor(R.color.colorAccent)
+            .setTextSize(40f)
+            .setBarHeight(15f)
+            .setBorderWidth(5f)
+            .setMetricUnit(true)
+            .setRefreshInterval(15)
+            .setMarginTop(30f)
+            .setMarginLeft(20f)
+            .setTextBarMargin(15f)
+
+        scaleBarPlugin.create(scaleBarOptions)
+    }
 }
 
 
