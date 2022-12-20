@@ -24,6 +24,7 @@ import com.appandroid.sagan.bicicadiz.Constants.COLOR_BLANCO
 import com.appandroid.sagan.bicicadiz.Constants.FUENTES_GEO
 import com.appandroid.sagan.bicicadiz.Constants.FUENTES_ICON
 import com.appandroid.sagan.bicicadiz.Constants.FUENTES_ID
+import com.appandroid.sagan.bicicadiz.Constants.LAYER_FUENTES_ID
 import com.appandroid.sagan.bicicadiz.Constants.LAYER_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_NAME
@@ -182,8 +183,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             enableLocationComponent(style)
             loadCarriles(style)
             switchAparcaBicis(style)
+            switchFuentes(style)
             if(binding.swAparcabicis.isChecked){
                  loadAparcaBicis(style)
+            }
+            if(binding.swFuentes.isChecked){
+                loadFuentes(style)
             }
          }
     }
@@ -299,7 +304,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         parkingBicis = GeoJsonSource(PARKING_ID, loadJsonFromAsset(APARCABICIS_GEO))
         style.addSource(parkingBicis)
         style.addImage(APARCABICIS_ICON, BitmapFactory.decodeResource(this.resources,
-            R.drawable.bike_icon
+            R.drawable.mapbox_marker_icon_default
         ))
         val symbolLayer = SymbolLayer(LAYER_ID, PARKING_ID)
         symbolLayer.withProperties(iconImage(APARCABICIS_ICON), iconAllowOverlap(true), iconSize(0.9f))
@@ -308,13 +313,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
 
     private fun loadFuentes(style: Style){
-        fuentes = GeoJsonSource(PARKING_ID, loadJsonFromAsset(FUENTES_GEO))
+        fuentes = GeoJsonSource(FUENTES_ID, loadJsonFromAsset(FUENTES_GEO))
         style.addSource(fuentes)
         style.addImage(FUENTES_ICON, BitmapFactory.decodeResource(this.resources,
-            R.drawable.mapbox_marker_icon_default
+            R.drawable.fuente
         ))
-        val symbolLayer = SymbolLayer(LAYER_ID, FUENTES_ID)
-        symbolLayer.withProperties(iconImage(FUENTES_ICON), iconAllowOverlap(true), iconSize(0.9f))
+        val symbolLayer = SymbolLayer(LAYER_FUENTES_ID, FUENTES_ID)
+        symbolLayer.withProperties(iconImage(FUENTES_ICON), iconAllowOverlap(true), iconSize(0.05f))
         style.addLayer(symbolLayer)
     }
 
@@ -329,6 +334,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                         style.removeSource(PARKING_ID)
                     }
                }
+        }
+    }
+
+    private fun switchFuentes(style: Style){
+        binding.swFuentes.setOnCheckedChangeListener{_, isChecked ->
+            if (isChecked) {
+                loadFuentes(style)
+            } else {
+                if(style.layers.isNotEmpty()){
+                    style.removeLayer(LAYER_FUENTES_ID)
+                    style.removeSource(FUENTES_ID)
+                }
+            }
         }
     }
 
