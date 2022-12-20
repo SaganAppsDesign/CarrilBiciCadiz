@@ -21,6 +21,9 @@ import com.appandroid.sagan.bicicadiz.Constants.APARCABICIS_ICON
 import com.appandroid.sagan.bicicadiz.Constants.CARRIL_BICI_GEO
 import com.appandroid.sagan.bicicadiz.Constants.CARRIL_ID
 import com.appandroid.sagan.bicicadiz.Constants.COLOR_BLANCO
+import com.appandroid.sagan.bicicadiz.Constants.FUENTES_GEO
+import com.appandroid.sagan.bicicadiz.Constants.FUENTES_ICON
+import com.appandroid.sagan.bicicadiz.Constants.FUENTES_ID
 import com.appandroid.sagan.bicicadiz.Constants.LAYER_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_NAME
@@ -65,17 +68,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     private var locationComponent: LocationComponent? = null
     private lateinit var carrilBici: GeoJsonSource
     private lateinit var parkingBicis: GeoJsonSource
+    private lateinit var fuentes: GeoJsonSource
     private var br: BroadcastReceiver = ConnectionReceiver()
-    private var storage = Firebase.storage
-    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token))
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        auth = Firebase.auth
 
         mapView = binding.mapView
         mapView!!.onCreate(savedInstanceState)
@@ -299,12 +299,25 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         parkingBicis = GeoJsonSource(PARKING_ID, loadJsonFromAsset(APARCABICIS_GEO))
         style.addSource(parkingBicis)
         style.addImage(APARCABICIS_ICON, BitmapFactory.decodeResource(this.resources,
-            R.drawable.mapbox_marker_icon_default
+            R.drawable.bike_icon
         ))
         val symbolLayer = SymbolLayer(LAYER_ID, PARKING_ID)
         symbolLayer.withProperties(iconImage(APARCABICIS_ICON), iconAllowOverlap(true), iconSize(0.9f))
         style.addLayer(symbolLayer)
     }
+
+
+    private fun loadFuentes(style: Style){
+        fuentes = GeoJsonSource(PARKING_ID, loadJsonFromAsset(FUENTES_GEO))
+        style.addSource(fuentes)
+        style.addImage(FUENTES_ICON, BitmapFactory.decodeResource(this.resources,
+            R.drawable.mapbox_marker_icon_default
+        ))
+        val symbolLayer = SymbolLayer(LAYER_ID, FUENTES_ID)
+        symbolLayer.withProperties(iconImage(FUENTES_ICON), iconAllowOverlap(true), iconSize(0.9f))
+        style.addLayer(symbolLayer)
+    }
+
 
     private fun switchAparcaBicis(style: Style){
         binding.swAparcabicis.setOnCheckedChangeListener{_, isChecked ->
@@ -330,7 +343,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         val scaleBarOptions = ScaleBarOptions(this)
         scaleBarOptions
             .setTextColor(R.color.colorAccent)
-            .setTextSize(40f)
+            .setTextSize(30f)
             .setBarHeight(15f)
             .setBorderWidth(5f)
             .setMetricUnit(true)
