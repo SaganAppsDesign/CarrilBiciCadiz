@@ -304,10 +304,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         parkingBicis = GeoJsonSource(PARKING_ID, loadJsonFromAsset(APARCABICIS_GEO))
         style.addSource(parkingBicis)
         style.addImage(APARCABICIS_ICON, BitmapFactory.decodeResource(this.resources,
-            R.drawable.mapbox_marker_icon_default
+            R.drawable.parking_bici
         ))
         val symbolLayer = SymbolLayer(LAYER_ID, PARKING_ID)
-        symbolLayer.withProperties(iconImage(APARCABICIS_ICON), iconAllowOverlap(true), iconSize(0.9f))
+        symbolLayer.withProperties(iconImage(APARCABICIS_ICON), iconAllowOverlap(true), iconSize(0.4f))
         style.addLayer(symbolLayer)
     }
 
@@ -319,7 +319,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             R.drawable.fuente
         ))
         val symbolLayer = SymbolLayer(LAYER_FUENTES_ID, FUENTES_ID)
-        symbolLayer.withProperties(iconImage(FUENTES_ICON), iconAllowOverlap(true), iconSize(0.05f))
+        symbolLayer.withProperties(iconImage(FUENTES_ICON), iconAllowOverlap(true), iconSize(0.2f))
         style.addLayer(symbolLayer)
     }
 
