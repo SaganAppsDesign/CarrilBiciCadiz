@@ -441,6 +441,21 @@
     {
       "type": "Feature",
       "properties": {
+        "name": "Aparcabicis Calle América",
+        "url": "<img src=\"https:\/\/doc-0c-3c-mymaps.googleusercontent.com\/untrusted\/hostedimage\/l6g5ndp3jkqtbhkj1l07plc9fc\/p74pigt5ad5l6pl1l2t4ftrlr4\/1670847300000\/bOHqnGk8O26UMB_TzkgunjgpsAf9Lf_p\/*\/6AKgB-9n6nOTzBYxSyocpaI6152hTJU5MXnJQOfwljh-c3Ud6nqhAmTaJ_J8h9eUT-PjR5rq3KKYgHYRvVl6hV3g0Z3af9_x_b7N56AvtWCh9Aa_H6m2xEVcHbCC4IupJ1oG_prFB58JIYYgK7AZIQj0-hW40xaIROkeiD0WOgSLSmCK5P7XZCwnlEEJnnLgI4NokTQ0?session=0&fife\" height=\"200\" width=\"auto\" \/><br><br>https:\/\/www.rutasyfotos.com\/2018\/08\/carril-bici-en-cadiz.html<br><br>Aparcabicis Paseo Marítimo de Astilleros",
+        "street_view_link": "https:\/\/doc-0c-3c-mymaps.googleusercontent.com\/untrusted\/hostedimage\/l6g5ndp3jkqtbhkj1l07plc9fc\/p74pigt5ad5l6pl1l2t4ftrlr4\/1670847300000\/bOHqnGk8O26UMB_TzkgunjgpsAf9Lf_p\/*\/6AKgB-9n6nOTzBYxSyocpaI6152hTJU5MXnJQOfwljh-c3Ud6nqhAmTaJ_J8h9eUT-PjR5rq3KKYgHYRvVl6hV3g0Z3af9_x_b7N56AvtWCh9Aa_H6m2xEVcHbCC4IupJ1oG_prFB58JIYYgK7AZIQj0-hW40xaIROkeiD0WOgSLSmCK5P7XZCwnlEEJnnLgI4NokTQ0?session=0&fife"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.276882,
+          36.522841
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "name": "Aparcabicis Paseo Marítimo de Astilleros",
         "url": "<img src=\"https:\/\/doc-0c-3c-mymaps.googleusercontent.com\/untrusted\/hostedimage\/l6g5ndp3jkqtbhkj1l07plc9fc\/p74pigt5ad5l6pl1l2t4ftrlr4\/1670847300000\/bOHqnGk8O26UMB_TzkgunjgpsAf9Lf_p\/*\/6AKgB-9n6nOTzBYxSyocpaI6152hTJU5MXnJQOfwljh-c3Ud6nqhAmTaJ_J8h9eUT-PjR5rq3KKYgHYRvVl6hV3g0Z3af9_x_b7N56AvtWCh9Aa_H6m2xEVcHbCC4IupJ1oG_prFB58JIYYgK7AZIQj0-hW40xaIROkeiD0WOgSLSmCK5P7XZCwnlEEJnnLgI4NokTQ0?session=0&fife\" height=\"200\" width=\"auto\" \/><br><br>https:\/\/www.rutasyfotos.com\/2018\/08\/carril-bici-en-cadiz.html<br><br>Aparcabicis Paseo Marítimo de Astilleros",
         
