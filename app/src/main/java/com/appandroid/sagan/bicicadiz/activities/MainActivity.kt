@@ -30,10 +30,6 @@ import com.appandroid.sagan.bicicadiz.Constants.PARKING_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_NAME
 import com.appandroid.sagan.bicicadiz.R
 import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.Mapbox
@@ -154,8 +150,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             loadMap(TRAFFIC_NIGHT)
             return true
         }
-        if (id == R.id.outdoors) {
-            loadMap(OUTDOORS)
+        if (id == R.id.light) {
+            loadCustomMap()
             return true
         }
 
@@ -191,6 +187,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                 loadFuentes(style)
             }
          }
+    }
+
+    private fun loadCustomMap() {
+        mapboxMap!!.setStyle(Builder().fromUri("mapbox://styles/darenas/ck0xul2h401cx1cmgkpovc27m")) {
+                style ->
+            enableLocationComponent(style)
+            loadCarriles(style)
+            switchAparcaBicis(style)
+            switchFuentes(style)
+            if(binding.swAparcabicis.isChecked){
+                loadAparcaBicis(style)
+            }
+            if(binding.swFuentes.isChecked){
+                loadFuentes(style)
+            }
+        }
     }
 
     private fun enableLocationComponent(style: Style) {
