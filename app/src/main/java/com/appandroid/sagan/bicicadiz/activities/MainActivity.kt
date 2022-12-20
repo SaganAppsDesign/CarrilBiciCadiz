@@ -34,6 +34,10 @@ import com.appandroid.sagan.bicicadiz.R
 import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
+import com.mapbox.api.directions.v5.DirectionsCriteria
+import com.mapbox.api.matching.v5.MapboxMapMatching
+import com.mapbox.api.matching.v5.models.MapMatchingResponse
+import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
@@ -53,8 +57,12 @@ import com.mapbox.mapboxsdk.style.layers.Property
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory.*
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
+import com.mapbox.maps.extension.observable.model.Response
+import com.mapbox.navigation.base.route.RouterOrigin
 import com.mapbox.pluginscalebar.ScaleBarOptions
 import com.mapbox.pluginscalebar.ScaleBarPlugin
+import okhttp3.Call
+import okhttp3.Callback
 import java.io.IOException
 
 
@@ -386,6 +394,39 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
         scaleBarPlugin.create(scaleBarOptions)
     }
+//
+//    private fun customNavigaation(){
+//        val singlePoint = Point.fromLngLat(45.55,56.55)
+//        val singlePoint2 = Point.fromLngLat(43.55,53.55)
+//        val customRoutePointList = listOf(singlePoint, singlePoint2)
+//        val mapboxMapMatchingRequest = MapboxMapMatching.builder()
+//            .accessToken(getString(R.string.mapbox_access_token))
+//            .coordinates(customRoutePointList)
+//            .steps(true)
+//            .voiceInstructions(true)
+//            .bannerInstructions(true)
+//            .profile(DirectionsCriteria.PROFILE_DRIVING)
+//            .build()
+//
+//        mapboxMapMatchingRequest.enqueueCall(object : Callback<MapMatchingResponse> {
+//            override fun onResponse(call: Call<MapMatchingResponse>, response: Response<MapMatchingResponse>) {
+//                if (response.isSuccessful) {
+//                    response.body()?.matchings()?.let { matchingList ->
+//                        matchingList[0].toDirectionRoute().toNavigationRoute(
+//                            RouterOrigin.Custom()
+//                        ).apply {
+//                            mapboxNavigation?.setNavigationRoutes(listOf(this))
+//                        }
+//                    }
+//
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<MapMatchingResponse>, throwable: Throwable) {
+//
+//            }
+//        })
+//    }
 }
 
 
