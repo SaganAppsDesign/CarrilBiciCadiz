@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
+    id 'com.google.firebase.firebase-perf'
 }
 
 android {
@@ -22,7 +23,7 @@ android {
         applicationId "com.appandroid.sagan.bicicadiz"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 36
+        versionCode 38
         versionName "1.0.3"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
@@ -67,6 +68,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage-ktx'
     implementation 'com.google.firebase:firebase-database-ktx'
     implementation 'com.google.firebase:firebase-config-ktx'
+    implementation 'com.google.firebase:firebase-perf-ktx'
 
     //Lottie
     def lottieVersion = "3.4.0"

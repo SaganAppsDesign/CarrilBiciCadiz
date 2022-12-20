@@ -7,11 +7,13 @@ import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.animation.BounceInterpolator
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -24,15 +26,12 @@ import com.appandroid.sagan.bicicadiz.Constants.COLOR_BLANCO
 import com.appandroid.sagan.bicicadiz.Constants.FUENTES_GEO
 import com.appandroid.sagan.bicicadiz.Constants.FUENTES_ICON
 import com.appandroid.sagan.bicicadiz.Constants.FUENTES_ID
+import com.appandroid.sagan.bicicadiz.Constants.LAYER_FUENTES_ID
 import com.appandroid.sagan.bicicadiz.Constants.LAYER_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_NAME
 import com.appandroid.sagan.bicicadiz.R
 import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.Mapbox
@@ -131,6 +130,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
     override fun onBackPressed() {}
 
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
         menu.setGroupDividerEnabled(true)
@@ -153,8 +153,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             loadMap(TRAFFIC_NIGHT)
             return true
         }
-        if (id == R.id.outdoors) {
-            loadMap(OUTDOORS)
+        if (id == R.id.light) {
+            loadCustomMap()
             return true
         }
 
@@ -173,6 +173,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         permissionsManager!!.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
@@ -182,10 +183,30 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             enableLocationComponent(style)
             loadCarriles(style)
             switchAparcaBicis(style)
+            switchFuentes(style)
             if(binding.swAparcabicis.isChecked){
                  loadAparcaBicis(style)
             }
+            if(binding.swFuentes.isChecked){
+                loadFuentes(style)
+            }
          }
+    }
+
+    private fun loadCustomMap() {
+        mapboxMap!!.setStyle(Builder().fromUri("mapbox://styles/darenas/ck0xul2h401cx1cmgkpovc27m")) {
+                style ->
+            enableLocationComponent(style)
+            loadCarriles(style)
+            switchAparcaBicis(style)
+            switchFuentes(style)
+            if(binding.swAparcabicis.isChecked){
+                loadAparcaBicis(style)
+            }
+            if(binding.swFuentes.isChecked){
+                loadFuentes(style)
+            }
+        }
     }
 
     private fun enableLocationComponent(style: Style) {
@@ -299,25 +320,23 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         parkingBicis = GeoJsonSource(PARKING_ID, loadJsonFromAsset(APARCABICIS_GEO))
         style.addSource(parkingBicis)
         style.addImage(APARCABICIS_ICON, BitmapFactory.decodeResource(this.resources,
-            R.drawable.bike_icon
+            R.drawable.parking_bici
         ))
         val symbolLayer = SymbolLayer(LAYER_ID, PARKING_ID)
-        symbolLayer.withProperties(iconImage(APARCABICIS_ICON), iconAllowOverlap(true), iconSize(0.9f))
+        symbolLayer.withProperties(iconImage(APARCABICIS_ICON), iconAllowOverlap(false), iconSize(0.3f), iconIgnorePlacement(false))
         style.addLayer(symbolLayer)
     }
-
 
     private fun loadFuentes(style: Style){
-        fuentes = GeoJsonSource(PARKING_ID, loadJsonFromAsset(FUENTES_GEO))
+        fuentes = GeoJsonSource(FUENTES_ID, loadJsonFromAsset(FUENTES_GEO))
         style.addSource(fuentes)
         style.addImage(FUENTES_ICON, BitmapFactory.decodeResource(this.resources,
-            R.drawable.mapbox_marker_icon_default
+            R.drawable.fuente
         ))
-        val symbolLayer = SymbolLayer(LAYER_ID, FUENTES_ID)
-        symbolLayer.withProperties(iconImage(FUENTES_ICON), iconAllowOverlap(true), iconSize(0.9f))
+        val symbolLayer = SymbolLayer(LAYER_FUENTES_ID, FUENTES_ID)
+        symbolLayer.withProperties(iconImage(FUENTES_ICON), iconAllowOverlap(false), iconSize(0.15f), iconIgnorePlacement(false))
         style.addLayer(symbolLayer)
     }
-
 
     private fun switchAparcaBicis(style: Style){
         binding.swAparcabicis.setOnCheckedChangeListener{_, isChecked ->
@@ -329,6 +348,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                         style.removeSource(PARKING_ID)
                     }
                }
+        }
+    }
+
+    private fun switchFuentes(style: Style){
+        binding.swFuentes.setOnCheckedChangeListener{_, isChecked ->
+            if (isChecked) {
+                loadFuentes(style)
+            } else {
+                if(style.layers.isNotEmpty()){
+                    style.removeLayer(LAYER_FUENTES_ID)
+                    style.removeSource(FUENTES_ID)
+                }
+            }
         }
     }
 
