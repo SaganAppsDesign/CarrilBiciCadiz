@@ -18,7 +18,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/floatButtons"
+            android:background="@color/backgroundLegend"
             app:popupTheme="@style/AppTheme.AppBarOverlay" >
 
             <TextView
@@ -27,9 +27,9 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_alternates"
                 android:text="@string/carril_bici_cadiz"
-                android:textAlignment="viewStart"
+                android:textAlignment="center"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
         </androidx.appcompat.widget.Toolbar>

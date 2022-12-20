@@ -7,11 +7,13 @@ import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.animation.BounceInterpolator
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -128,6 +130,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
     override fun onBackPressed() {}
 
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
         menu.setGroupDividerEnabled(true)
@@ -170,6 +173,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         permissionsManager!!.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
@@ -323,7 +327,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         style.addLayer(symbolLayer)
     }
 
-
     private fun loadFuentes(style: Style){
         fuentes = GeoJsonSource(FUENTES_ID, loadJsonFromAsset(FUENTES_GEO))
         style.addSource(fuentes)
@@ -334,7 +337,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         symbolLayer.withProperties(iconImage(FUENTES_ICON), iconAllowOverlap(false), iconSize(0.15f), iconIgnorePlacement(false))
         style.addLayer(symbolLayer)
     }
-
 
     private fun switchAparcaBicis(style: Style){
         binding.swAparcabicis.setOnCheckedChangeListener{_, isChecked ->
