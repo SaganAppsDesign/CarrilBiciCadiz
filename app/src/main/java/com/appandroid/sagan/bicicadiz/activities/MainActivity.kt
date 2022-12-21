@@ -96,6 +96,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         val welcomeDialog = WelcomeInfoFragment()
         welcomeDialog.show(supportFragmentManager, "infoDialog")
         getAparcabicis()
+
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
@@ -418,10 +419,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             val aparcaBicis = call.body()
             runOnUiThread{
                 if(call.isSuccessful){
-                    Log.i("aparcaBicis desde la api de mapbox", "$aparcaBicis")
-                } else{
-                    //ERROR
-                }
+                      for(i in aparcaBicis?.features?.indices!!){
+                            Log.i("aparcaBicis", aparcaBicis.features[i].geometry.coordinates[0].toString())
+                            Log.i("aparcaBicis", aparcaBicis.features[i].geometry.coordinates[1].toString())
+                            Log.i("aparcaBicis", aparcaBicis.features[i].properties.name)
+                         }
+
+                } else{    }
             }
 
         }
