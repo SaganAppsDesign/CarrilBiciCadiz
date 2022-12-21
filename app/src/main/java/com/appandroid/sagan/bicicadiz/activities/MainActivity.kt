@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.animation.BounceInterpolator
@@ -17,6 +18,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
+import com.appandroid.sagan.bicicadiz.APIService
 import com.appandroid.sagan.bicicadiz.ConnectionReceiver
 import com.appandroid.sagan.bicicadiz.Constants.APARCABICIS_GEO
 import com.appandroid.sagan.bicicadiz.Constants.APARCABICIS_ICON
@@ -58,6 +60,11 @@ import com.mapbox.mapboxsdk.style.layers.SymbolLayer
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import com.mapbox.pluginscalebar.ScaleBarOptions
 import com.mapbox.pluginscalebar.ScaleBarPlugin
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 
 
@@ -88,6 +95,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         activeReceiver()
         val welcomeDialog = WelcomeInfoFragment()
         welcomeDialog.show(supportFragmentManager, "infoDialog")
+        getAparcabicis()
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
@@ -219,6 +227,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
     private fun enableLocationComponent(style: Style) {
         if (PermissionsManager.areLocationPermissionsGranted(this@MainActivity)) {
+            locationComponent = mapboxMap?.locationComponent
+
             val locationComponentOptions = LocationComponentOptions.builder(this)
                 .pulseEnabled(true)
                 .pulseColor(Color.argb(255,159, 237, 254))
@@ -231,16 +241,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                 .locationComponentOptions(locationComponentOptions)
                 .build()
 
-            locationComponent = mapboxMap!!.locationComponent
-            locationComponent!!.activateLocationComponent(locationComponentActivationOptions)
+            locationComponent?.activateLocationComponent(locationComponentActivationOptions)
 
             if (ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
                 return
             }
-            locationComponent!!.isLocationComponentEnabled = true
-            locationComponent!!.renderMode = RenderMode.COMPASS
+            locationComponent?.isLocationComponentEnabled = true
+            locationComponent?.cameraMode = CameraMode.TRACKING
+            locationComponent?.renderMode = RenderMode.COMPASS
 
         } else {
             permissionsManager = PermissionsManager(this@MainActivity)
@@ -394,6 +404,30 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
         scaleBarPlugin.create(scaleBarOptions)
     }
+
+    private fun getRetrofit(): Retrofit{
+        return Retrofit.Builder()
+            .baseUrl("https://api.mapbox.com/datasets/v1/darenas/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    private fun getAparcabicis(){
+        CoroutineScope(Dispatchers.IO).launch {
+            val call = getRetrofit().create(APIService::class.java).getAparcabicis("clbxups790gbo27phj46d8ohk/features?access_token=pk.eyJ1IjoiZGFyZW5hcyIsImEiOiJjbGJrb3ZwOWwwMGcxM3FuMWNqZG5sbnVlIn0.F7SmJXfkGo2xa1-jwdW5fw")
+            val aparcaBicis = call.body()
+            runOnUiThread{
+                if(call.isSuccessful){
+                    Log.i("aparcaBicis desde la api de mapbox", "$aparcaBicis")
+                } else{
+                    //ERROR
+                }
+            }
+
+        }
+
+    }
+
 }
 
 
