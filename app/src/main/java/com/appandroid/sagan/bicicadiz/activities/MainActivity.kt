@@ -32,6 +32,8 @@ import com.appandroid.sagan.bicicadiz.Constants.PARKING_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_NAME
 import com.appandroid.sagan.bicicadiz.R
 import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
+import com.appandroid.sagan.bicicadiz.fragments.WelcomeInfoFragment
+import com.google.android.material.snackbar.Snackbar
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.Mapbox
@@ -82,8 +84,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-
         activeReceiver()
+        val welcomeDialog = WelcomeInfoFragment()
+        welcomeDialog.show(supportFragmentManager, "infoDialog")
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
@@ -116,10 +119,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                 val title = selectedFeature.getStringProperty(PARKING_LOCATION_NAME)
 
                 if(title.isNullOrEmpty()){
-                    Toast.makeText(this, getString(R.string.estacionamiento_sin_nombre), Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this, getString(R.string.estacionamiento_sin_nombre), Toast.LENGTH_SHORT).show()
+                    Snackbar.make(
+                       findViewById(R.id.myCoordinatorLayout),
+                       title,
+                       Snackbar.LENGTH_SHORT
+                    ).show()
                 }
                 else {
-                    Toast.makeText(this, title, Toast.LENGTH_SHORT).show()
+                    Snackbar.make(
+                        findViewById(R.id.myCoordinatorLayout),
+                        title,
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+//                    Toast.makeText(this, title, Toast.LENGTH_SHORT).show()
                     }
             }
             false

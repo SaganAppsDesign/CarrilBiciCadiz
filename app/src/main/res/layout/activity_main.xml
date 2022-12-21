@@ -163,6 +163,7 @@
             android:id="@+id/tvFuentes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:fontFamily="@font/montserrat_alternates"
             android:text="Fuentes de agua"
             android:textColor="@android:color/white"

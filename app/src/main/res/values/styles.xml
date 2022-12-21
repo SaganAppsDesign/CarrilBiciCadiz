@@ -26,7 +26,11 @@
 
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:fontFamily">@font/montserrat_alternates</item>
-        <item name="tint">@color/colorPrimaryDark</item>
+        <item name="tint">@color/floatButtons</item>
+    </style>
+
+    <style name="AlertDialogCustom" parent="@android:style/Theme.Dialog">
+        <item name="android:background">@color/floatButtons</item>
     </style>
 
 
