@@ -29,7 +29,13 @@
         <entry key="..\:/Android/carrilBiciCadiz/app/src/main/res/menu/main.xml" value="0.24010416666666667" />
         <entry key="..\:/Android/carrilBiciCadiz/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.17" />
         <entry key="..\:/Android/carrilBiciCadiz/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.17" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/CarrilesBiciCadiz/app/src/main/res/drawable/background_text_info.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/CarrilesBiciCadiz/app/src/main/res/drawable/background_title_info.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/CarrilesBiciCadiz/app/src/main/res/drawable/estilo_boton_bienvenida.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/CarrilesBiciCadiz/app/src/main/res/drawable/round_corner.xml" value="0.26614583333333336" />
         <entry key="..\:/Users/david/AndroidStudioProjects/CarrilesBiciCadiz/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/CarrilesBiciCadiz/app/src/main/res/layout/info_dialog.xml" value="0.536" />
+        <entry key="..\:/Users/david/AndroidStudioProjects/CarrilesBiciCadiz/app/src/main/res/layout/snack_bar.xml" value="0.25" />
         <entry key="..\:/Users/david/AndroidStudioProjects/CarrilesBiciCadiz/app/src/main/res/menu/main.xml" value="0.25" />
       </map>
     </option>

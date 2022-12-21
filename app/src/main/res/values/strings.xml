@@ -5,7 +5,7 @@
     <string name="no_ubicacion">No encuentra ubicación. Espere unos segundos...</string>
     <string name="mapbox_access_token">pk.eyJ1IjoiZGFyZW5hcyIsImEiOiJjbGJrb3ZwOWwwMGcxM3FuMWNqZG5sbnVlIn0.F7SmJXfkGo2xa1-jwdW5fw</string>
     <string name="parking_name">Aparcabicis Campo del SUR</string>
-    <string name="title_info">En este mapa podrás encontrar \nlo siguiente:</string>
-    <string name="points_info">- Carriles bici. \n\n- Aparcabicis municipales. \n\n- Localización de las fuentes \nde agua potable de la ciudad. \n\n</string>
+    <string name="title_info">En este mapa podrás encontrar \nlo siguiente --></string>
+    <string name="points_info">\n- Carriles bici. \n\n- Aparcabicis municipales. \n\n- Localización de las fuentes \nde agua potable de la ciudad. \n\n</string>
     <string name="main_title">Carril bici de Cádiz</string>
 </resources>

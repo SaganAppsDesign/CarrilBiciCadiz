@@ -378,8 +378,7 @@
       "type": "Feature",
       "properties": {
         "name": "Aparcabicis El Corte Ingles",
-        "url": "<img src=\"https:\/\/doc-0c-3c-mymaps.googleusercontent.com\/untrusted\/hostedimage\/l6g5ndp3jkqtbhkj1l07plc9fc\/t070ffid1s48thdnmvnfcsqp5k\/1670847300000\/bOHqnGk8O26UMB_TzkgunjgpsAf9Lf_p\/*\/6AKgB-9kQR2aaw0k02wivuUpxXBl8nPDgyh1AjulaV1ox7OhNg0iGA0-t9iKBmAKp1mjTDVrOspU7fLw6ewCM4qnKJllHv-rvbg0m10jbMp-HVnB9InejqiyHS6fzkxTZ6jR1UNBo7Ftik_j5LAND7vboAOpLsdXwN5VI6rbpwAUAEnh7buVzaBPavbpUy2cGzKHnICc?session=0&fife\" height=\"200\" width=\"auto\" \/><br><br>https:\/\/www.rutasyfotos.com\/2018\/08\/carril-bici-en-cadiz.html<br><br>Aparcabicis El Corte Ingles, cercano a la Casa de las Artes, junto a una de las entradas del centgro comercial.",
-
+        "url": "",
         "street_view_link": "https:\/\/doc-0c-3c-mymaps.googleusercontent.com\/untrusted\/hostedimage\/l6g5ndp3jkqtbhkj1l07plc9fc\/t070ffid1s48thdnmvnfcsqp5k\/1670847300000\/bOHqnGk8O26UMB_TzkgunjgpsAf9Lf_p\/*\/6AKgB-9kQR2aaw0k02wivuUpxXBl8nPDgyh1AjulaV1ox7OhNg0iGA0-t9iKBmAKp1mjTDVrOspU7fLw6ewCM4qnKJllHv-rvbg0m10jbMp-HVnB9InejqiyHS6fzkxTZ6jR1UNBo7Ftik_j5LAND7vboAOpLsdXwN5VI6rbpwAUAEnh7buVzaBPavbpUy2cGzKHnICc?session=0&fife"
       },
       "geometry": {
@@ -387,22 +386,6 @@
         "coordinates": [
           -6.278084,
           36.52214
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Aparcabicis El Corte Ingles (III)",
-        "url": "<img src=\"https:\/\/doc-0o-3c-mymaps.googleusercontent.com\/untrusted\/hostedimage\/l6g5ndp3jkqtbhkj1l07plc9fc\/qdqkujr10sg69js9a4r06vtdu4\/1670847300000\/bOHqnGk8O26UMB_TzkgunjgpsAf9Lf_p\/*\/6AKgB-9ngon45laBV5tvzrSsGOeQoRXuJw1EAgNjYnY1t0J27RRsQeQYdwv8WkfYDE1gm-7fLBQVrY0yZTR0MGf4TK_hOgbMIRY0WpF-ILpKCz_qj7hguoYlkJH5cA8xi1C9pVR9sxaSQQAUnrC8TQs6MKcyNG6QhYpc_O1BAHfG6tZgONL28VQct7QtfpXfxvIY927g?session=0&fife\" height=\"200\" width=\"auto\" \/><br><br>https:\/\/www.rutasyfotos.com\/2018\/08\/carril-bici-en-cadiz.html<br><br>En la Av. de Huelva",
-
-        "street_view_link": "https:\/\/doc-0o-3c-mymaps.googleusercontent.com\/untrusted\/hostedimage\/l6g5ndp3jkqtbhkj1l07plc9fc\/qdqkujr10sg69js9a4r06vtdu4\/1670847300000\/bOHqnGk8O26UMB_TzkgunjgpsAf9Lf_p\/*\/6AKgB-9ngon45laBV5tvzrSsGOeQoRXuJw1EAgNjYnY1t0J27RRsQeQYdwv8WkfYDE1gm-7fLBQVrY0yZTR0MGf4TK_hOgbMIRY0WpF-ILpKCz_qj7hguoYlkJH5cA8xi1C9pVR9sxaSQQAUnrC8TQs6MKcyNG6QhYpc_O1BAHfG6tZgONL28VQct7QtfpXfxvIY927g?session=0&fife"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -6.2763579,
-          36.5207886
         ]
       }
     },
