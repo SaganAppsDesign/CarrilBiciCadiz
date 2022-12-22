@@ -1,4 +1,4 @@
-package com.appandroid.sagan.bicicadiz.fragments
+package com.appandroid.sagan.bicicadiz.view.fragments
 
 import android.app.AlertDialog
 import android.app.Dialog

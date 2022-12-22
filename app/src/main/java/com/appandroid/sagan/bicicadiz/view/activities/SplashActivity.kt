@@ -1,11 +1,8 @@
-package com.appandroid.sagan.bicicadiz.activities
+package com.appandroid.sagan.bicicadiz.view.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.appandroid.sagan.bicicadiz.R
-import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
 import com.appandroid.sagan.bicicadiz.databinding.ActivityPantallaInicioBinding
 
 private lateinit var binding : ActivityPantallaInicioBinding
