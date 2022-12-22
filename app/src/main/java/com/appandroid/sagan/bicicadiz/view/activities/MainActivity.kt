@@ -19,8 +19,6 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.Observer
-import com.appandroid.sagan.bicicadiz.remote.APIService
 import com.appandroid.sagan.bicicadiz.ConnectionReceiver
 import com.appandroid.sagan.bicicadiz.Constants.APARCABICIS_GEO
 import com.appandroid.sagan.bicicadiz.Constants.APARCABICIS_ICON
@@ -36,7 +34,6 @@ import com.appandroid.sagan.bicicadiz.Constants.PARKING_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_NAME
 import com.appandroid.sagan.bicicadiz.R
 import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
-import com.appandroid.sagan.bicicadiz.getAparcabicis
 import com.appandroid.sagan.bicicadiz.view.fragments.WelcomeInfoFragment
 import com.appandroid.sagan.bicicadiz.viewmodel.AparcaBicisViewModel
 import com.google.android.material.snackbar.BaseTransientBottomBar
@@ -44,6 +41,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.mapboxsdk.annotations.MarkerOptions
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
@@ -64,11 +62,6 @@ import com.mapbox.mapboxsdk.style.layers.SymbolLayer
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import com.mapbox.pluginscalebar.ScaleBarOptions
 import com.mapbox.pluginscalebar.ScaleBarPlugin
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 
 
@@ -94,20 +87,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         mapView = binding.mapView
         mapView!!.onCreate(savedInstanceState)
         mapView!!.getMapAsync(this)
-
-        aparcabicisViewModel.aparcabicisModel.observe(this, Observer {
-            binding.tvTitle.text = it[0].name
-
-        })
+        aparcabicisViewModel.getAparcabicisVMCoordinates()
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         activeReceiver()
         val welcomeDialog = WelcomeInfoFragment()
         welcomeDialog.show(supportFragmentManager, "infoDialog")
-
-        getAparcabicis()
-
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
@@ -116,6 +102,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         loadMap(TRAFFIC_NIGHT)
         mapboxMap.setMaxZoomPreference(18.0)
         mapboxMap.setMinZoomPreference(12.0)
+
+        aparcabicisViewModel.aparcabicisNameCoordinates.observe(this) {
+            for ((coord, name) in it) {
+                for (i in 0 until 100){
+                    mapboxMap.addMarker(
+                        MarkerOptions()
+                            .position(LatLng(coord[i].coordinates[1], coord[i].coordinates[0]))
+                            .title(name[i].name))
+                }
+            }
+
+        }
 
         binding.zoomTolayer.setOnClickListener {
              val position = CameraPosition.Builder()
@@ -156,6 +154,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         scaleBar(mapView, mapboxMap)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {}
 
     @RequiresApi(Build.VERSION_CODES.P)
@@ -416,33 +415,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
         scaleBarPlugin.create(scaleBarOptions)
     }
-
-//    private fun getRetrofit(): Retrofit{
-//        return Retrofit.Builder()
-//            .baseUrl("https://api.mapbox.com/datasets/v1/darenas/")
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//    }
-//
-//    private fun getAparcabicis(){
-//        CoroutineScope(Dispatchers.IO).launch {
-//            val call = getRetrofit().create(APIService::class.java).getAparcabicis("clbxups790gbo27phj46d8ohk/features?access_token=pk.eyJ1IjoiZGFyZW5hcyIsImEiOiJjbGJrb3ZwOWwwMGcxM3FuMWNqZG5sbnVlIn0.F7SmJXfkGo2xa1-jwdW5fw")
-//            val aparcaBicis = call.body()
-//            runOnUiThread{
-//                if(call.isSuccessful){
-//                      for(i in aparcaBicis?.features?.indices!!){
-//                            Log.i("aparcaBicis", aparcaBicis.features[i].geometry.coordinates[0].toString())
-//                            Log.i("aparcaBicis", aparcaBicis.features[i].geometry.coordinates[1].toString())
-//                            Log.i("aparcaBicis", aparcaBicis.features[i].properties.name)
-//                         }
-//
-//                } else{    }
-//            }
-//
-//        }
-//
-//    }
-
 }
 
 
