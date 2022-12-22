@@ -1,29 +1,18 @@
 package com.appandroid.sagan.bicicadiz
 
-import android.util.Log
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import com.appandroid.sagan.bicicadiz.Constants.ID_DATASET_APARCABICIS
+import com.appandroid.sagan.bicicadiz.Constants.ID_DATASET_FUENTES
 import com.appandroid.sagan.bicicadiz.model.Geometry
 import com.appandroid.sagan.bicicadiz.model.Properties
 import com.appandroid.sagan.bicicadiz.remote.APIService
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class Functions: AppCompatActivity() {
-
-    fun ImageView.loadUrl(url: String? = null, radius: Int) {
-        Glide.with(context)
-            .load(url)
-            .fitCenter()
-            .transform(RoundedCorners(radius))
-            .into(this)
-    }
-}
+object Retrofit: AppCompatActivity() {
 
     private fun getRetrofit(): Retrofit {
         return Retrofit.Builder()
@@ -32,14 +21,13 @@ class Functions: AppCompatActivity() {
             .build()
     }
 
-
     fun getAparcabicisNameCoordinates(): MutableMap<MutableList<Geometry>, MutableList<Properties>>{
         val coordinatesList = mutableListOf<Geometry>()
         val nameList = mutableListOf<Properties>()
         val mapNameCoordinates = mutableMapOf(Pair(coordinatesList, nameList))
 
         CoroutineScope(Dispatchers.IO).launch {
-            val call = getRetrofit().create(APIService::class.java).getAparcabicis("clbxups790gbo27phj46d8ohk/features?" +
+            val call = getRetrofit().create(APIService::class.java).getGeoData("clbxups790gbo27phj46d8ohk/features?" +
                     "access_token=pk.eyJ1IjoiZGFyZW5hcyIsImEiOiJjbGJrb3ZwOWwwMGcxM3FuMWNqZG5sbnVlIn0.F7SmJXfkGo2xa1-jwdW5fw")
             val aparcaBicis = call.body()
 
@@ -53,3 +41,25 @@ class Functions: AppCompatActivity() {
         }
         return mapNameCoordinates
     }
+
+    fun getFuentesCoordinates(): MutableList<Geometry>{
+        val coordinatesList = mutableListOf<Geometry>()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val call = getRetrofit().create(APIService::class.java).getGeoData("clbxumz5r014k28ozsad9kwwb/features?" +
+                    "access_token=pk.eyJ1IjoiZGFyZW5hcyIsImEiOiJjbGJrb3ZwOWwwMGcxM3FuMWNqZG5sbnVlIn0.F7SmJXfkGo2xa1-jwdW5fw")
+            val fuentes = call.body()
+
+            if(call.isSuccessful){
+                for(i in fuentes?.features?.indices!!){
+                    coordinatesList.add(Geometry(fuentes.features[i].geometry.coordinates))
+               }
+            } else{ println("Error")  }
+        }
+        return coordinatesList
+    }
+
+
+
+
+}

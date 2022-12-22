@@ -7,5 +7,5 @@ import retrofit2.http.Url
 
 interface APIService {
     @GET
-    suspend fun getAparcabicis(@Url url:String):Response<MainResponse>
+    suspend fun getGeoData(@Url url:String):Response<MainResponse>
 }

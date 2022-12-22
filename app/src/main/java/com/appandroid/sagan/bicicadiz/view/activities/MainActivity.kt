@@ -9,7 +9,6 @@ import android.graphics.Color
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.animation.BounceInterpolator
@@ -20,8 +19,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import com.appandroid.sagan.bicicadiz.ConnectionReceiver
-import com.appandroid.sagan.bicicadiz.Constants.APARCABICIS_GEO
-import com.appandroid.sagan.bicicadiz.Constants.APARCABICIS_ICON
 import com.appandroid.sagan.bicicadiz.Constants.CARRIL_BICI_GEO
 import com.appandroid.sagan.bicicadiz.Constants.CARRIL_ID
 import com.appandroid.sagan.bicicadiz.Constants.COLOR_BLANCO
@@ -30,12 +27,11 @@ import com.appandroid.sagan.bicicadiz.Constants.FUENTES_ICON
 import com.appandroid.sagan.bicicadiz.Constants.FUENTES_ID
 import com.appandroid.sagan.bicicadiz.Constants.LAYER_FUENTES_ID
 import com.appandroid.sagan.bicicadiz.Constants.LAYER_ID
-import com.appandroid.sagan.bicicadiz.Constants.PARKING_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_NAME
 import com.appandroid.sagan.bicicadiz.R
 import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
 import com.appandroid.sagan.bicicadiz.view.fragments.WelcomeInfoFragment
-import com.appandroid.sagan.bicicadiz.viewmodel.AparcaBicisViewModel
+import com.appandroid.sagan.bicicadiz.viewmodel.GeodataViewModel
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.mapbox.android.core.permissions.PermissionsListener
@@ -76,7 +72,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     private lateinit var parkingBicis: GeoJsonSource
     private lateinit var fuentes: GeoJsonSource
     private var br: BroadcastReceiver = ConnectionReceiver()
-    private val aparcabicisViewModel: AparcaBicisViewModel by viewModels()
+    private val aparcabicisViewModel: GeodataViewModel by viewModels()
+    private val fuentesViewModel: GeodataViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,6 +85,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         mapView!!.onCreate(savedInstanceState)
         mapView!!.getMapAsync(this)
         aparcabicisViewModel.getAparcabicisVMCoordinates()
+        fuentesViewModel.getFuentesVMCoordinates()
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -102,19 +100,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         loadMap(TRAFFIC_NIGHT)
         mapboxMap.setMaxZoomPreference(18.0)
         mapboxMap.setMinZoomPreference(12.0)
-
-        aparcabicisViewModel.aparcabicisNameCoordinates.observe(this) {
-            for ((coord, name) in it) {
-                for (i in 0 until 100){
-                    mapboxMap.addMarker(
-                        MarkerOptions()
-                            .position(LatLng(coord[i].coordinates[1], coord[i].coordinates[0]))
-                            .title(name[i].name))
-                }
-            }
-
-        }
-
         binding.zoomTolayer.setOnClickListener {
              val position = CameraPosition.Builder()
                     .target(LatLng(36.514444, -6.279378))
@@ -209,13 +194,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         ) { style ->
             enableLocationComponent(style)
             loadCarriles(style)
-            switchAparcaBicis(style)
-            switchFuentes(style)
+            switchAparcaBicis()
+            switchFuentes()
             if(binding.swAparcabicis.isChecked){
-                 loadAparcaBicis(style)
+                 loadAparcaBicis()
             }
             if(binding.swFuentes.isChecked){
-                loadFuentes(style)
+                loadFuentes()
             }
          }
     }
@@ -225,13 +210,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                 style ->
             enableLocationComponent(style)
             loadCarriles(style)
-            switchAparcaBicis(style)
-            switchFuentes(style)
+            switchAparcaBicis()
+            switchFuentes()
             if(binding.swAparcabicis.isChecked){
-                loadAparcaBicis(style)
+                loadAparcaBicis()
             }
             if(binding.swFuentes.isChecked){
-                loadFuentes(style)
+                loadFuentes()
             }
         }
     }
@@ -345,50 +330,82 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             ))
     }
 
-    private fun loadAparcaBicis(style: Style){
-        parkingBicis = GeoJsonSource(PARKING_ID, loadJsonFromAsset(APARCABICIS_GEO))
-        style.addSource(parkingBicis)
-        style.addImage(APARCABICIS_ICON, BitmapFactory.decodeResource(this.resources,
-            R.drawable.parking_bici
-        ))
-        val symbolLayer = SymbolLayer(LAYER_ID, PARKING_ID)
-        symbolLayer.withProperties(iconImage(APARCABICIS_ICON), iconAllowOverlap(false), iconSize(0.3f), iconIgnorePlacement(false))
-        style.addLayer(symbolLayer)
+    private fun loadAparcaBicis(){
+        aparcabicisViewModel.aparcabicisNameCoordinates.observe(this) {
+                for ((coord, name) in it) {
+                    for (i in 0 until coord.size){
+                        mapboxMap?.addMarker(
+                            MarkerOptions()
+                                .position(LatLng(coord[i].coordinates[1], coord[i].coordinates[0]))
+                                .title(name[i].name)
+                             )
+                    }
+            }
+        }
+
+//        parkingBicis = GeoJsonSource(PARKING_ID, loadJsonFromAsset(APARCABICIS_GEO))
+//        style.addSource(parkingBicis)
+//        style.addImage(APARCABICIS_ICON, BitmapFactory.decodeResource(this.resources,
+//            R.drawable.parking_bici
+//        ))
+//        val symbolLayer = SymbolLayer(LAYER_ID, PARKING_ID)
+//        symbolLayer.withProperties(iconImage(APARCABICIS_ICON), iconAllowOverlap(false), iconSize(0.3f), iconIgnorePlacement(false))
+//        style.addLayer(symbolLayer)
     }
 
-    private fun loadFuentes(style: Style){
-        fuentes = GeoJsonSource(FUENTES_ID, loadJsonFromAsset(FUENTES_GEO))
-        style.addSource(fuentes)
-        style.addImage(FUENTES_ICON, BitmapFactory.decodeResource(this.resources,
-            R.drawable.fuente
-        ))
-        val symbolLayer = SymbolLayer(LAYER_FUENTES_ID, FUENTES_ID)
-        symbolLayer.withProperties(iconImage(FUENTES_ICON), iconAllowOverlap(false), iconSize(0.15f), iconIgnorePlacement(false))
-        style.addLayer(symbolLayer)
+    private fun removeAparcabicis(){
+        mapboxMap?.removeAnnotations()
     }
 
-    private fun switchAparcaBicis(style: Style){
+    private fun loadFuentes(){
+        fuentesViewModel.fuentesCoordinates.observe(this) {
+                 for (i in 0 until it.size){
+                    mapboxMap?.addMarker(
+                        MarkerOptions()
+                            .position(LatLng(it[i].coordinates[1], it[i].coordinates[0]))
+                    )
+                }
+           }
+
+
+//        fuentes = GeoJsonSource(FUENTES_ID, loadJsonFromAsset(FUENTES_GEO))
+//        style.addSource(fuentes)
+//        style.addImage(FUENTES_ICON, BitmapFactory.decodeResource(this.resources,
+//            R.drawable.fuente
+//        ))
+//        val symbolLayer = SymbolLayer(LAYER_FUENTES_ID, FUENTES_ID)
+//        symbolLayer.withProperties(iconImage(FUENTES_ICON), iconAllowOverlap(false), iconSize(0.15f), iconIgnorePlacement(false))
+//        style.addLayer(symbolLayer)
+    }
+
+    private fun removeFuentes(){
+        mapboxMap?.removeAnnotations()
+    }
+
+    private fun switchAparcaBicis(){
         binding.swAparcabicis.setOnCheckedChangeListener{_, isChecked ->
             if (isChecked) {
-                loadAparcaBicis(style)
+                loadAparcaBicis()
                 } else {
-                    if(style.layers.isNotEmpty()){
-                        style.removeLayer(LAYER_ID)
-                        style.removeSource(PARKING_ID)
-                    }
+//                    if(style.layers.isNotEmpty()){
+//                        style.removeLayer(LAYER_ID)
+//                        style.removeSource(PARKING_ID)
+//                    }
+                removeAparcabicis()
                }
         }
     }
 
-    private fun switchFuentes(style: Style){
+    private fun switchFuentes(){
         binding.swFuentes.setOnCheckedChangeListener{_, isChecked ->
             if (isChecked) {
-                loadFuentes(style)
+                loadFuentes()
             } else {
-                if(style.layers.isNotEmpty()){
-                    style.removeLayer(LAYER_FUENTES_ID)
-                    style.removeSource(FUENTES_ID)
-                }
+                removeFuentes()
+//                if(style.layers.isNotEmpty()){
+//                    style.removeLayer(LAYER_FUENTES_ID)
+//                    style.removeSource(FUENTES_ID)
+//                }
             }
         }
     }
