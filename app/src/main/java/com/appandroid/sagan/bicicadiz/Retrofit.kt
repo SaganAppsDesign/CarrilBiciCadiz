@@ -1,9 +1,9 @@
 package com.appandroid.sagan.bicicadiz
 
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.appandroid.sagan.bicicadiz.Constants.ID_DATASET_APARCABICIS
-import com.appandroid.sagan.bicicadiz.Constants.ID_DATASET_FUENTES
-import com.appandroid.sagan.bicicadiz.model.Geometry
+import com.appandroid.sagan.bicicadiz.model.LineGeometry
+import com.appandroid.sagan.bicicadiz.model.PointGeometry
 import com.appandroid.sagan.bicicadiz.model.Properties
 import com.appandroid.sagan.bicicadiz.remote.APIService
 import kotlinx.coroutines.CoroutineScope
@@ -21,19 +21,19 @@ object Retrofit: AppCompatActivity() {
             .build()
     }
 
-    fun getAparcabicisNameCoordinates(): MutableMap<MutableList<Geometry>, MutableList<Properties>>{
-        val coordinatesList = mutableListOf<Geometry>()
+    fun getAparcabicisNameCoordinates(): MutableMap<MutableList<PointGeometry>, MutableList<Properties>>{
+        val coordinatesList = mutableListOf<PointGeometry>()
         val nameList = mutableListOf<Properties>()
         val mapNameCoordinates = mutableMapOf(Pair(coordinatesList, nameList))
 
         CoroutineScope(Dispatchers.IO).launch {
-            val call = getRetrofit().create(APIService::class.java).getGeoData("clbxups790gbo27phj46d8ohk/features?" +
+            val call = getRetrofit().create(APIService::class.java).getPointData("clbxups790gbo27phj46d8ohk/features?" +
                     "access_token=pk.eyJ1IjoiZGFyZW5hcyIsImEiOiJjbGJrb3ZwOWwwMGcxM3FuMWNqZG5sbnVlIn0.F7SmJXfkGo2xa1-jwdW5fw")
             val aparcaBicis = call.body()
 
             if(call.isSuccessful){
                 for(i in aparcaBicis?.features?.indices!!){
-                    coordinatesList.add(Geometry(aparcaBicis.features[i].geometry.coordinates))
+                    coordinatesList.add(PointGeometry(aparcaBicis.features[i].geometry.coordinates))
                     nameList.add(Properties(aparcaBicis.features[i].properties.name))
                 }
 
@@ -42,24 +42,37 @@ object Retrofit: AppCompatActivity() {
         return mapNameCoordinates
     }
 
-    fun getFuentesCoordinates(): MutableList<Geometry>{
-        val coordinatesList = mutableListOf<Geometry>()
+    fun getFuentesCoordinates(): MutableList<PointGeometry>{
+        val coordinatesList = mutableListOf<PointGeometry>()
 
         CoroutineScope(Dispatchers.IO).launch {
-            val call = getRetrofit().create(APIService::class.java).getGeoData("clbxumz5r014k28ozsad9kwwb/features?" +
+            val call = getRetrofit().create(APIService::class.java).getPointData("clbxumz5r014k28ozsad9kwwb/features?" +
                     "access_token=pk.eyJ1IjoiZGFyZW5hcyIsImEiOiJjbGJrb3ZwOWwwMGcxM3FuMWNqZG5sbnVlIn0.F7SmJXfkGo2xa1-jwdW5fw")
             val fuentes = call.body()
 
             if(call.isSuccessful){
                 for(i in fuentes?.features?.indices!!){
-                    coordinatesList.add(Geometry(fuentes.features[i].geometry.coordinates))
+                    coordinatesList.add(PointGeometry(fuentes.features[i].geometry.coordinates))
                }
             } else{ println("Error")  }
         }
         return coordinatesList
     }
 
+    fun getCarrilesCoordinates(): MutableList<MutableList<LineGeometry>>{
+        val coordinatesList = mutableListOf<MutableList<LineGeometry>>()
 
+        CoroutineScope(Dispatchers.IO).launch {
+            val call = getRetrofit().create(APIService::class.java).getLineData("clbxuo2g124ls20myo6271a9c/features?" +
+                    "access_token=pk.eyJ1IjoiZGFyZW5hcyIsImEiOiJjbGJrb3ZwOWwwMGcxM3FuMWNqZG5sbnVlIn0.F7SmJXfkGo2xa1-jwdW5fw")
+            val carriles = call.body()
 
-
+            if(call.isSuccessful){
+                for(i in carriles?.features?.indices!!){
+                    coordinatesList.add(mutableListOf(LineGeometry(carriles.features[i].geometry.coordinates)))
+                }
+            } else{ println("Error")}
+        }
+        return coordinatesList
+    }
 }

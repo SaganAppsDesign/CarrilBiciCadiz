@@ -4,11 +4,11 @@ import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.animation.BounceInterpolator
@@ -22,10 +22,6 @@ import com.appandroid.sagan.bicicadiz.ConnectionReceiver
 import com.appandroid.sagan.bicicadiz.Constants.CARRIL_BICI_GEO
 import com.appandroid.sagan.bicicadiz.Constants.CARRIL_ID
 import com.appandroid.sagan.bicicadiz.Constants.COLOR_BLANCO
-import com.appandroid.sagan.bicicadiz.Constants.FUENTES_GEO
-import com.appandroid.sagan.bicicadiz.Constants.FUENTES_ICON
-import com.appandroid.sagan.bicicadiz.Constants.FUENTES_ID
-import com.appandroid.sagan.bicicadiz.Constants.LAYER_FUENTES_ID
 import com.appandroid.sagan.bicicadiz.Constants.LAYER_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_NAME
 import com.appandroid.sagan.bicicadiz.R
@@ -36,6 +32,10 @@ import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
+import com.mapbox.geojson.Feature
+import com.mapbox.geojson.FeatureCollection
+import com.mapbox.geojson.LineString
+import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.annotations.MarkerOptions
 import com.mapbox.mapboxsdk.camera.CameraPosition
@@ -54,7 +54,6 @@ import com.mapbox.mapboxsdk.maps.Style.*
 import com.mapbox.mapboxsdk.style.layers.LineLayer
 import com.mapbox.mapboxsdk.style.layers.Property
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory.*
-import com.mapbox.mapboxsdk.style.layers.SymbolLayer
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import com.mapbox.pluginscalebar.ScaleBarOptions
 import com.mapbox.pluginscalebar.ScaleBarPlugin
@@ -74,6 +73,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     private var br: BroadcastReceiver = ConnectionReceiver()
     private val aparcabicisViewModel: GeodataViewModel by viewModels()
     private val fuentesViewModel: GeodataViewModel by viewModels()
+    private val carrilesViewModel: GeodataViewModel by viewModels()
+    private val routeCoordinates: MutableList<Point>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,6 +93,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         activeReceiver()
         val welcomeDialog = WelcomeInfoFragment()
         welcomeDialog.show(supportFragmentManager, "infoDialog")
+
+        carrilesViewModel.carrilesCoordinates.observe(this) {
+
+            for(feature in it){
+                Log.i("carrilesCoordinates", "$feature")
+//                routeCoordinates?.add(Point.fromLngLat(-118.39439114221236, 33.397676454651766))
+
+            }
+        }
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
@@ -307,6 +317,30 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     }
 
     private fun loadCarriles(style: Style){
+
+        carrilesViewModel.carrilesCoordinates.observe(this) {
+
+            for(feature in it){
+                  Log.i("carrilesCoordinates", "$feature")
+//                routeCoordinates?.add(Point.fromLngLat(-118.39439114221236, 33.397676454651766))
+
+            }
+            }
+
+
+
+//        style.addSource(
+//            GeoJsonSource(
+//                CARRIL_ID,
+//                FeatureCollection.fromFeatures(
+//                    arrayOf<Feature>(
+//                        Feature.fromGeometry(
+//                            routeCoordinates?.let { LineString.fromLngLats(it) }
+//                        )
+//                    )
+//                )
+//            )
+//        )
 
         carrilBici = GeoJsonSource(CARRIL_ID, loadJsonFromAsset(CARRIL_BICI_GEO))
 

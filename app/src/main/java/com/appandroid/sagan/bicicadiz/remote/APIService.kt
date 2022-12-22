@@ -1,11 +1,15 @@
 package com.appandroid.sagan.bicicadiz.remote
 
-import com.appandroid.sagan.bicicadiz.model.MainResponse
+import com.appandroid.sagan.bicicadiz.model.GeoLineResponse
+import com.appandroid.sagan.bicicadiz.model.GeoPointResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Url
 
 interface APIService {
     @GET
-    suspend fun getGeoData(@Url url:String):Response<MainResponse>
+    suspend fun getPointData(@Url url:String):Response<GeoPointResponse>
+
+    @GET
+    suspend fun getLineData(@Url url:String):Response<GeoLineResponse>
 }
