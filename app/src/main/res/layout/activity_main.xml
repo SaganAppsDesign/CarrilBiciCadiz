@@ -10,7 +10,7 @@
     android:layout_gravity="center_vertical"
     android:orientation="vertical"
     android:id="@+id/activity_main"
-    tools:context=".view.activities.MainActivity">
+    tools:context=".ui.view.activities.MainActivity">
 
     <com.mapbox.mapboxsdk.maps.MapView
         android:id="@+id/mapView"

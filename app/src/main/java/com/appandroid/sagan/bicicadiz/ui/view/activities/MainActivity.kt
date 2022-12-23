@@ -1,7 +1,6 @@
-package com.appandroid.sagan.bicicadiz.view.activities
+package com.appandroid.sagan.bicicadiz.ui.view.activities
 
 import android.Manifest
-import android.R.style
 import android.content.BroadcastReceiver
 import android.content.IntentFilter
 import android.content.pm.PackageManager
@@ -26,8 +25,8 @@ import com.appandroid.sagan.bicicadiz.Constants.LAYER_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_NAME
 import com.appandroid.sagan.bicicadiz.R
 import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
-import com.appandroid.sagan.bicicadiz.view.fragments.WelcomeInfoFragment
-import com.appandroid.sagan.bicicadiz.viewmodel.GeodataViewModel
+import com.appandroid.sagan.bicicadiz.ui.view.fragments.WelcomeInfoFragment
+import com.appandroid.sagan.bicicadiz.ui.viewmodel.GeodataViewModel
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.mapbox.android.core.permissions.PermissionsListener

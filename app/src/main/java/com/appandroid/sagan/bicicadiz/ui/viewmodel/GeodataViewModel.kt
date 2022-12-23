@@ -1,13 +1,13 @@
-package com.appandroid.sagan.bicicadiz.viewmodel
+package com.appandroid.sagan.bicicadiz.ui.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.appandroid.sagan.bicicadiz.Retrofit.getAparcabicisNameCoordinates
-import com.appandroid.sagan.bicicadiz.Retrofit.getCarrilesCoordinates
-import com.appandroid.sagan.bicicadiz.Retrofit.getFuentesCoordinates
-import com.appandroid.sagan.bicicadiz.model.LineGeometry
-import com.appandroid.sagan.bicicadiz.model.PointGeometry
-import com.appandroid.sagan.bicicadiz.model.Properties
+import com.appandroid.sagan.bicicadiz.RetrofitUseCases.getAparcabicisNameCoordinates
+import com.appandroid.sagan.bicicadiz.RetrofitUseCases.getCarrilesCoordinates
+import com.appandroid.sagan.bicicadiz.RetrofitUseCases.getFuentesCoordinates
+import com.appandroid.sagan.bicicadiz.data.model.LineGeometry
+import com.appandroid.sagan.bicicadiz.data.model.PointGeometry
+import com.appandroid.sagan.bicicadiz.data.model.Properties
 
 class GeodataViewModel: ViewModel() {
 

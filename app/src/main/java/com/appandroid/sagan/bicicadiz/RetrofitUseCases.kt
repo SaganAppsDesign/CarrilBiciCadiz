@@ -6,12 +6,12 @@ import com.appandroid.sagan.bicicadiz.core.RetrofitHelper.getRetrofit
 import com.appandroid.sagan.bicicadiz.data.model.LineGeometry
 import com.appandroid.sagan.bicicadiz.data.model.PointGeometry
 import com.appandroid.sagan.bicicadiz.data.model.Properties
-import com.appandroid.sagan.bicicadiz.remote.APIService
+import com.appandroid.sagan.bicicadiz.data.APIService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-object Retrofit: AppCompatActivity() {
+object RetrofitUseCases: AppCompatActivity() {
 
     fun getAparcabicisNameCoordinates(): MutableMap<MutableList<PointGeometry>, MutableList<Properties>>{
         val coordinatesList = mutableListOf<PointGeometry>()
