@@ -2,24 +2,16 @@ package com.appandroid.sagan.bicicadiz
 
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.appandroid.sagan.bicicadiz.model.LineGeometry
-import com.appandroid.sagan.bicicadiz.model.PointGeometry
-import com.appandroid.sagan.bicicadiz.model.Properties
+import com.appandroid.sagan.bicicadiz.core.RetrofitHelper.getRetrofit
+import com.appandroid.sagan.bicicadiz.data.model.LineGeometry
+import com.appandroid.sagan.bicicadiz.data.model.PointGeometry
+import com.appandroid.sagan.bicicadiz.data.model.Properties
 import com.appandroid.sagan.bicicadiz.remote.APIService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 object Retrofit: AppCompatActivity() {
-
-    private fun getRetrofit(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl("https://api.mapbox.com/datasets/v1/darenas/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
 
     fun getAparcabicisNameCoordinates(): MutableMap<MutableList<PointGeometry>, MutableList<Properties>>{
         val coordinatesList = mutableListOf<PointGeometry>()

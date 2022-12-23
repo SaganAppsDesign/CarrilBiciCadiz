@@ -1,7 +1,7 @@
 package com.appandroid.sagan.bicicadiz.remote
 
-import com.appandroid.sagan.bicicadiz.model.GeoLineResponse
-import com.appandroid.sagan.bicicadiz.model.GeoPointResponse
+import com.appandroid.sagan.bicicadiz.data.model.GeoLineResponse
+import com.appandroid.sagan.bicicadiz.data.model.GeoPointResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Url
