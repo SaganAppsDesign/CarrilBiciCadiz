@@ -13,7 +13,7 @@ class GeodataViewModel: ViewModel() {
 
     val aparcabicisNameCoordinates = MutableLiveData <MutableMap <MutableList<PointGeometry>, MutableList<Properties>>>()
     val fuentesCoordinates = MutableLiveData<MutableList <PointGeometry>>()
-    val carrilesCoordinates = MutableLiveData<MutableList <MutableList <LineGeometry>>>()
+    val carrilesCoordinates = MutableLiveData<MutableList <LineGeometry>>()
 
 
     fun getAparcabicisVMCoordinates() {
@@ -27,7 +27,7 @@ class GeodataViewModel: ViewModel() {
     }
 
     fun getCarrilesVMCoordinates() {
-        val carrilesCoord: MutableList <MutableList <LineGeometry>> = getCarrilesCoordinates()
+        val carrilesCoord: MutableList <LineGeometry> = getCarrilesCoordinates()
         carrilesCoordinates.postValue(carrilesCoord)
     }
 

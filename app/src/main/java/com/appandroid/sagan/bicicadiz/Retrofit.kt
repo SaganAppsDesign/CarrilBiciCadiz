@@ -36,14 +36,13 @@ object Retrofit: AppCompatActivity() {
                     coordinatesList.add(PointGeometry(aparcaBicis.features[i].geometry.coordinates))
                     nameList.add(Properties(aparcaBicis.features[i].properties.name))
                 }
-
             } else{ println("Error")  }
         }
         return mapNameCoordinates
     }
 
     fun getFuentesCoordinates(): MutableList<PointGeometry>{
-        val coordinatesList = mutableListOf<PointGeometry>()
+        val pointGeometryList = mutableListOf<PointGeometry>()
 
         CoroutineScope(Dispatchers.IO).launch {
             val call = getRetrofit().create(APIService::class.java).getPointData("clbxumz5r014k28ozsad9kwwb/features?" +
@@ -52,27 +51,29 @@ object Retrofit: AppCompatActivity() {
 
             if(call.isSuccessful){
                 for(i in fuentes?.features?.indices!!){
-                    coordinatesList.add(PointGeometry(fuentes.features[i].geometry.coordinates))
+                    pointGeometryList.add(PointGeometry(fuentes.features[i].geometry.coordinates))
                }
-            } else{ println("Error")  }
-        }
-        return coordinatesList
-    }
-
-    fun getCarrilesCoordinates(): MutableList<MutableList<LineGeometry>>{
-        val coordinatesList = mutableListOf<MutableList<LineGeometry>>()
-
-        CoroutineScope(Dispatchers.IO).launch {
-            val call = getRetrofit().create(APIService::class.java).getLineData("clbxuo2g124ls20myo6271a9c/features?" +
-                    "access_token=pk.eyJ1IjoiZGFyZW5hcyIsImEiOiJjbGJrb3ZwOWwwMGcxM3FuMWNqZG5sbnVlIn0.F7SmJXfkGo2xa1-jwdW5fw")
-            val carriles = call.body()
-
-            if(call.isSuccessful){
-                for(i in carriles?.features?.indices!!){
-                    coordinatesList.add(mutableListOf(LineGeometry(carriles.features[i].geometry.coordinates)))
-                }
             } else{ println("Error")}
         }
-        return coordinatesList
+        return pointGeometryList
+    }
+
+    fun getCarrilesCoordinates(): MutableList<LineGeometry>{
+        val lineGeometryList = mutableListOf<LineGeometry>()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val call = getRetrofit().create(APIService::class.java).getLineData("clc0fim26026g2docli79zgaf/features?" +
+                    "access_token=pk.eyJ1IjoiZGFyZW5hcyIsImEiOiJjbGJrb3ZwOWwwMGcxM3FuMWNqZG5sbnVlIn0.F7SmJXfkGo2xa1-jwdW5fw")
+            val carriles = call.body()
+            Log.i("(carriles","$carriles")
+            if(call.isSuccessful){
+                for(i in carriles?.features?.indices!!){
+                    lineGeometryList.add(LineGeometry(carriles.features[i].geometry.coordinates))
+                }
+            Log.i("(coordinatesList bucle","$lineGeometryList")
+            } else{ println("Error")}
+        }
+        Log.i("(coordinatesList)","$lineGeometryList")
+        return lineGeometryList
     }
 }

@@ -1,6 +1,7 @@
 package com.appandroid.sagan.bicicadiz.view.activities
 
 import android.Manifest
+import android.R.style
 import android.content.BroadcastReceiver
 import android.content.IntentFilter
 import android.content.pm.PackageManager
@@ -19,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import com.appandroid.sagan.bicicadiz.ConnectionReceiver
-import com.appandroid.sagan.bicicadiz.Constants.CARRIL_BICI_GEO
 import com.appandroid.sagan.bicicadiz.Constants.CARRIL_ID
 import com.appandroid.sagan.bicicadiz.Constants.COLOR_BLANCO
 import com.appandroid.sagan.bicicadiz.Constants.LAYER_ID
@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     private val aparcabicisViewModel: GeodataViewModel by viewModels()
     private val fuentesViewModel: GeodataViewModel by viewModels()
     private val carrilesViewModel: GeodataViewModel by viewModels()
-    private val routeCoordinates: MutableList<Point>? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +87,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         mapView!!.getMapAsync(this)
         aparcabicisViewModel.getAparcabicisVMCoordinates()
         fuentesViewModel.getFuentesVMCoordinates()
+        carrilesViewModel.getCarrilesVMCoordinates()
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -94,14 +95,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         val welcomeDialog = WelcomeInfoFragment()
         welcomeDialog.show(supportFragmentManager, "infoDialog")
 
-        carrilesViewModel.carrilesCoordinates.observe(this) {
-
-            for(feature in it){
-                Log.i("carrilesCoordinates", "$feature")
-//                routeCoordinates?.add(Point.fromLngLat(-118.39439114221236, 33.397676454651766))
-
-            }
-        }
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
@@ -317,51 +310,57 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     }
 
     private fun loadCarriles(style: Style){
+        val routeCoordinates = mutableListOf<List<Point>>()
 
         carrilesViewModel.carrilesCoordinates.observe(this) {
-
             for(feature in it){
-                  Log.i("carrilesCoordinates", "$feature")
-//                routeCoordinates?.add(Point.fromLngLat(-118.39439114221236, 33.397676454651766))
-
+                for (i in 0 until feature.coordinates.size){
+                  Log.i("carrilesViewModel", "${feature.coordinates[i]}")
+                  routeCoordinates[i]
+             }
             }
-            }
+
+            style.addSource(
+                GeoJsonSource(
+                    CARRIL_ID,
+                    FeatureCollection.fromFeatures(
+                        arrayOf<Feature>(
+                            Feature.fromGeometry(
+                                routeCoordinates.let { LineString.fromLngLats(it) }
+                            )
+                        )
+                    )
+                )
+            )
+
+            style.addLayer(
+                LineLayer("carril_background_layer", CARRIL_ID)
+                    .withProperties(
+                        lineCap(Property.LINE_CAP_SQUARE),
+                        lineJoin(Property.LINE_JOIN_MITER),
+                        lineOpacity(.7f),
+                        lineWidth(8f),
+                        lineColor(Color.parseColor(COLOR_BLANCO))
+                    ))
+
+            style.addLayer(LineLayer("carril_layer", CARRIL_ID)
+                .withProperties(
+                    lineCap(Property.LINE_CAP_SQUARE),
+                    lineJoin(Property.LINE_JOIN_MITER),
+                    lineOpacity(.7f),
+                    lineWidth(4f),
+                    lineColor(Color.parseColor("#329221"))
+                ))
+        }
+//        routeCoordinates.add(Point.fromLngLat(-6.267882, 36.495308))
+//        routeCoordinates.add(Point.fromLngLat(-6.267949, 36.495325))
 
 
 
-//        style.addSource(
-//            GeoJsonSource(
-//                CARRIL_ID,
-//                FeatureCollection.fromFeatures(
-//                    arrayOf<Feature>(
-//                        Feature.fromGeometry(
-//                            routeCoordinates?.let { LineString.fromLngLats(it) }
-//                        )
-//                    )
-//                )
-//            )
-//        )
+//        carrilBici = GeoJsonSource(CARRIL_ID, loadJsonFromAsset(CARRIL_BICI_GEO))
 
-        carrilBici = GeoJsonSource(CARRIL_ID, loadJsonFromAsset(CARRIL_BICI_GEO))
+//        style.addSource(carrilBici)
 
-        style.addSource(carrilBici)
-        style.addLayer(LineLayer("carril_background_layer", CARRIL_ID)
-            .withProperties(
-                lineCap(Property.LINE_CAP_SQUARE),
-                lineJoin(Property.LINE_JOIN_MITER),
-                lineOpacity(.7f),
-                lineWidth(8f),
-                lineColor(Color.parseColor(COLOR_BLANCO))
-            ))
-
-        style.addLayer(LineLayer("carril_layer", CARRIL_ID)
-            .withProperties(
-                lineCap(Property.LINE_CAP_SQUARE),
-                lineJoin(Property.LINE_JOIN_MITER),
-                lineOpacity(.7f),
-                lineWidth(4f),
-                lineColor(Color.parseColor("#329221"))
-            ))
     }
 
     private fun loadAparcaBicis(){
