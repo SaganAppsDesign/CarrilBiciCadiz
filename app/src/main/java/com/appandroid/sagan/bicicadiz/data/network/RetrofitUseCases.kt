@@ -1,4 +1,4 @@
-package com.appandroid.sagan.bicicadiz
+package com.appandroid.sagan.bicicadiz.data.network
 
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -6,7 +6,6 @@ import com.appandroid.sagan.bicicadiz.core.RetrofitHelper.getRetrofit
 import com.appandroid.sagan.bicicadiz.data.model.LineGeometry
 import com.appandroid.sagan.bicicadiz.data.model.PointGeometry
 import com.appandroid.sagan.bicicadiz.data.model.Properties
-import com.appandroid.sagan.bicicadiz.data.APIService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

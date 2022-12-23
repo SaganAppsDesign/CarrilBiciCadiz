@@ -1,4 +1,4 @@
-package com.appandroid.sagan.bicicadiz.data
+package com.appandroid.sagan.bicicadiz.data.network
 
 import com.appandroid.sagan.bicicadiz.data.model.GeoLineResponse
 import com.appandroid.sagan.bicicadiz.data.model.GeoPointResponse

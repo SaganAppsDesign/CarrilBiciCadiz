@@ -2,9 +2,9 @@ package com.appandroid.sagan.bicicadiz.ui.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.appandroid.sagan.bicicadiz.RetrofitUseCases.getAparcabicisNameCoordinates
-import com.appandroid.sagan.bicicadiz.RetrofitUseCases.getCarrilesCoordinates
-import com.appandroid.sagan.bicicadiz.RetrofitUseCases.getFuentesCoordinates
+import com.appandroid.sagan.bicicadiz.data.network.RetrofitUseCases.getAparcabicisNameCoordinates
+import com.appandroid.sagan.bicicadiz.data.network.RetrofitUseCases.getCarrilesCoordinates
+import com.appandroid.sagan.bicicadiz.data.network.RetrofitUseCases.getFuentesCoordinates
 import com.appandroid.sagan.bicicadiz.data.model.LineGeometry
 import com.appandroid.sagan.bicicadiz.data.model.PointGeometry
 import com.appandroid.sagan.bicicadiz.data.model.Properties
