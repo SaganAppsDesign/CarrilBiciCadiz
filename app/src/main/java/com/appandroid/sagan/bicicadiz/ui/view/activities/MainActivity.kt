@@ -1,4 +1,4 @@
-package com.appandroid.sagan.bicicadiz.view.activities
+package com.appandroid.sagan.bicicadiz.ui.view.activities
 
 import android.Manifest
 import android.content.BroadcastReceiver
@@ -19,31 +19,28 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.Observer
-import com.appandroid.sagan.bicicadiz.remote.APIService
 import com.appandroid.sagan.bicicadiz.ConnectionReceiver
 import com.appandroid.sagan.bicicadiz.Constants.APARCABICIS_GEO
 import com.appandroid.sagan.bicicadiz.Constants.APARCABICIS_ICON
-import com.appandroid.sagan.bicicadiz.Constants.CARRIL_BICI_GEO
 import com.appandroid.sagan.bicicadiz.Constants.CARRIL_ID
 import com.appandroid.sagan.bicicadiz.Constants.COLOR_BLANCO
-import com.appandroid.sagan.bicicadiz.Constants.FUENTES_GEO
-import com.appandroid.sagan.bicicadiz.Constants.FUENTES_ICON
-import com.appandroid.sagan.bicicadiz.Constants.FUENTES_ID
-import com.appandroid.sagan.bicicadiz.Constants.LAYER_FUENTES_ID
 import com.appandroid.sagan.bicicadiz.Constants.LAYER_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_NAME
 import com.appandroid.sagan.bicicadiz.R
 import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
-import com.appandroid.sagan.bicicadiz.getAparcabicis
-import com.appandroid.sagan.bicicadiz.view.fragments.WelcomeInfoFragment
-import com.appandroid.sagan.bicicadiz.viewmodel.AparcaBicisViewModel
+import com.appandroid.sagan.bicicadiz.ui.view.fragments.WelcomeInfoFragment
+import com.appandroid.sagan.bicicadiz.ui.viewmodel.GeodataViewModel
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
+import com.mapbox.geojson.Feature
+import com.mapbox.geojson.FeatureCollection
+import com.mapbox.geojson.LineString
+import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.mapboxsdk.annotations.MarkerOptions
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
@@ -64,11 +61,6 @@ import com.mapbox.mapboxsdk.style.layers.SymbolLayer
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import com.mapbox.pluginscalebar.ScaleBarOptions
 import com.mapbox.pluginscalebar.ScaleBarPlugin
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 
 
@@ -83,7 +75,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     private lateinit var parkingBicis: GeoJsonSource
     private lateinit var fuentes: GeoJsonSource
     private var br: BroadcastReceiver = ConnectionReceiver()
-    private val aparcabicisViewModel: AparcaBicisViewModel by viewModels()
+    private val aparcabicisViewModel: GeodataViewModel by viewModels()
+    private val fuentesViewModel: GeodataViewModel by viewModels()
+    private val carrilesViewModel: GeodataViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,19 +89,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         mapView = binding.mapView
         mapView!!.onCreate(savedInstanceState)
         mapView!!.getMapAsync(this)
-
-        aparcabicisViewModel.aparcabicisModel.observe(this, Observer {
-            binding.tvTitle.text = it[0].name
-
-        })
+        aparcabicisViewModel.getAparcabicisVMCoordinates()
+        fuentesViewModel.getFuentesVMCoordinates()
+        carrilesViewModel.getCarrilesVMCoordinates()
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         activeReceiver()
         val welcomeDialog = WelcomeInfoFragment()
         welcomeDialog.show(supportFragmentManager, "infoDialog")
-
-        getAparcabicis()
 
     }
 
@@ -116,7 +107,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         loadMap(TRAFFIC_NIGHT)
         mapboxMap.setMaxZoomPreference(18.0)
         mapboxMap.setMinZoomPreference(12.0)
-
         binding.zoomTolayer.setOnClickListener {
              val position = CameraPosition.Builder()
                     .target(LatLng(36.514444, -6.279378))
@@ -156,6 +146,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         scaleBar(mapView, mapboxMap)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {}
 
     @RequiresApi(Build.VERSION_CODES.P)
@@ -211,12 +202,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             enableLocationComponent(style)
             loadCarriles(style)
             switchAparcaBicis(style)
-            switchFuentes(style)
+            switchFuentes()
             if(binding.swAparcabicis.isChecked){
                  loadAparcaBicis(style)
             }
             if(binding.swFuentes.isChecked){
-                loadFuentes(style)
+                loadFuentes()
             }
          }
     }
@@ -227,12 +218,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             enableLocationComponent(style)
             loadCarriles(style)
             switchAparcaBicis(style)
-            switchFuentes(style)
+            switchFuentes()
             if(binding.swAparcabicis.isChecked){
                 loadAparcaBicis(style)
             }
             if(binding.swFuentes.isChecked){
-                loadFuentes(style)
+                loadFuentes()
             }
         }
     }
@@ -323,49 +314,109 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     }
 
     private fun loadCarriles(style: Style){
+        val routeCoordinates = mutableListOf<List<Point>>()
 
-        carrilBici = GeoJsonSource(CARRIL_ID, loadJsonFromAsset(CARRIL_BICI_GEO))
+        carrilesViewModel.carrilesCoordinates.observe(this) {
+            for(feature in it){
+                for (i in 0 until feature.coordinates.size){
+                  Log.i("carrilesViewModel", "${feature.coordinates[i]}")
+                  routeCoordinates[i]
+             }
+            }
 
-        style.addSource(carrilBici)
-        style.addLayer(LineLayer("carril_background_layer", CARRIL_ID)
-            .withProperties(
-                lineCap(Property.LINE_CAP_SQUARE),
-                lineJoin(Property.LINE_JOIN_MITER),
-                lineOpacity(.7f),
-                lineWidth(8f),
-                lineColor(Color.parseColor(COLOR_BLANCO))
-            ))
+            style.addSource(
+                GeoJsonSource(
+                    CARRIL_ID,
+                    FeatureCollection.fromFeatures(
+                        arrayOf<Feature>(
+                            Feature.fromGeometry(
+                                routeCoordinates.let { LineString.fromLngLats(it) }
+                            )
+                        )
+                    )
+                )
+            )
 
-        style.addLayer(LineLayer("carril_layer", CARRIL_ID)
-            .withProperties(
-                lineCap(Property.LINE_CAP_SQUARE),
-                lineJoin(Property.LINE_JOIN_MITER),
-                lineOpacity(.7f),
-                lineWidth(4f),
-                lineColor(Color.parseColor("#329221"))
-            ))
+            style.addLayer(
+                LineLayer("carril_background_layer", CARRIL_ID)
+                    .withProperties(
+                        lineCap(Property.LINE_CAP_SQUARE),
+                        lineJoin(Property.LINE_JOIN_MITER),
+                        lineOpacity(.7f),
+                        lineWidth(8f),
+                        lineColor(Color.parseColor(COLOR_BLANCO))
+                    ))
+
+            style.addLayer(LineLayer("carril_layer", CARRIL_ID)
+                .withProperties(
+                    lineCap(Property.LINE_CAP_SQUARE),
+                    lineJoin(Property.LINE_JOIN_MITER),
+                    lineOpacity(.7f),
+                    lineWidth(4f),
+                    lineColor(Color.parseColor("#329221"))
+                ))
+        }
+//        routeCoordinates.add(Point.fromLngLat(-6.267882, 36.495308))
+//        routeCoordinates.add(Point.fromLngLat(-6.267949, 36.495325))
+
+
+
+//        carrilBici = GeoJsonSource(CARRIL_ID, loadJsonFromAsset(CARRIL_BICI_GEO))
+
+//        style.addSource(carrilBici)
+
     }
 
     private fun loadAparcaBicis(style: Style){
-        parkingBicis = GeoJsonSource(PARKING_ID, loadJsonFromAsset(APARCABICIS_GEO))
+//        aparcabicisViewModel.aparcabicisNameCoordinates.observe(this) {
+//                for ((coord, name) in it) {
+//                    for (i in 0 until coord.size){
+//                        mapboxMap?.addMarker(
+//                            MarkerOptions()
+//                                .position(LatLng(coord[i].coordinates[1], coord[i].coordinates[0]))
+//                                .title(name[i].name)
+//                             )
+//                    }
+//            }
+//        }
+
+        parkingBicis = GeoJsonSource(PARKING_ID, "https://api.mapbox.com/datasets/v1/darenas/clbxups790gbo27phj46d8ohk/features?access_token=pk.eyJ1IjoiZGFyZW5hcyIsImEiOiJjbGJrb3ZwOWwwMGcxM3FuMWNqZG5sbnVlIn0.F7SmJXfkGo2xa1-jwdW5fw")
         style.addSource(parkingBicis)
         style.addImage(APARCABICIS_ICON, BitmapFactory.decodeResource(this.resources,
-            R.drawable.parking_bici
+           R.drawable.parking_bici
         ))
         val symbolLayer = SymbolLayer(LAYER_ID, PARKING_ID)
         symbolLayer.withProperties(iconImage(APARCABICIS_ICON), iconAllowOverlap(false), iconSize(0.3f), iconIgnorePlacement(false))
         style.addLayer(symbolLayer)
     }
 
-    private fun loadFuentes(style: Style){
-        fuentes = GeoJsonSource(FUENTES_ID, loadJsonFromAsset(FUENTES_GEO))
-        style.addSource(fuentes)
-        style.addImage(FUENTES_ICON, BitmapFactory.decodeResource(this.resources,
-            R.drawable.fuente
-        ))
-        val symbolLayer = SymbolLayer(LAYER_FUENTES_ID, FUENTES_ID)
-        symbolLayer.withProperties(iconImage(FUENTES_ICON), iconAllowOverlap(false), iconSize(0.15f), iconIgnorePlacement(false))
-        style.addLayer(symbolLayer)
+    private fun removeAparcabicis(){
+        mapboxMap?.removeAnnotations()
+    }
+
+    private fun loadFuentes(){
+        fuentesViewModel.fuentesCoordinates.observe(this) {
+                 for (i in 0 until it.size){
+                    mapboxMap?.addMarker(
+                        MarkerOptions()
+                            .position(LatLng(it[i].coordinates[1], it[i].coordinates[0]))
+                    )
+                }
+           }
+
+
+//        fuentes = GeoJsonSource(FUENTES_ID, loadJsonFromAsset(FUENTES_GEO))
+//        style.addSource(fuentes)
+//        style.addImage(FUENTES_ICON, BitmapFactory.decodeResource(this.resources,
+//            R.drawable.fuente
+//        ))
+//        val symbolLayer = SymbolLayer(LAYER_FUENTES_ID, FUENTES_ID)
+//        symbolLayer.withProperties(iconImage(FUENTES_ICON), iconAllowOverlap(false), iconSize(0.15f), iconIgnorePlacement(false))
+//        style.addLayer(symbolLayer)
+    }
+
+    private fun removeFuentes(){
+        mapboxMap?.removeAnnotations()
     }
 
     private fun switchAparcaBicis(style: Style){
@@ -373,23 +424,25 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             if (isChecked) {
                 loadAparcaBicis(style)
                 } else {
-                    if(style.layers.isNotEmpty()){
-                        style.removeLayer(LAYER_ID)
-                        style.removeSource(PARKING_ID)
-                    }
+//                    if(style.layers.isNotEmpty()){
+//                        style.removeLayer(LAYER_ID)
+//                        style.removeSource(PARKING_ID)
+//                    }
+                removeAparcabicis()
                }
         }
     }
 
-    private fun switchFuentes(style: Style){
+    private fun switchFuentes(){
         binding.swFuentes.setOnCheckedChangeListener{_, isChecked ->
             if (isChecked) {
-                loadFuentes(style)
+                loadFuentes()
             } else {
-                if(style.layers.isNotEmpty()){
-                    style.removeLayer(LAYER_FUENTES_ID)
-                    style.removeSource(FUENTES_ID)
-                }
+                removeFuentes()
+//                if(style.layers.isNotEmpty()){
+//                    style.removeLayer(LAYER_FUENTES_ID)
+//                    style.removeSource(FUENTES_ID)
+//                }
             }
         }
     }
@@ -416,33 +469,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
         scaleBarPlugin.create(scaleBarOptions)
     }
-
-//    private fun getRetrofit(): Retrofit{
-//        return Retrofit.Builder()
-//            .baseUrl("https://api.mapbox.com/datasets/v1/darenas/")
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//    }
-//
-//    private fun getAparcabicis(){
-//        CoroutineScope(Dispatchers.IO).launch {
-//            val call = getRetrofit().create(APIService::class.java).getAparcabicis("clbxups790gbo27phj46d8ohk/features?access_token=pk.eyJ1IjoiZGFyZW5hcyIsImEiOiJjbGJrb3ZwOWwwMGcxM3FuMWNqZG5sbnVlIn0.F7SmJXfkGo2xa1-jwdW5fw")
-//            val aparcaBicis = call.body()
-//            runOnUiThread{
-//                if(call.isSuccessful){
-//                      for(i in aparcaBicis?.features?.indices!!){
-//                            Log.i("aparcaBicis", aparcaBicis.features[i].geometry.coordinates[0].toString())
-//                            Log.i("aparcaBicis", aparcaBicis.features[i].geometry.coordinates[1].toString())
-//                            Log.i("aparcaBicis", aparcaBicis.features[i].properties.name)
-//                         }
-//
-//                } else{    }
-//            }
-//
-//        }
-//
-//    }
-
 }
 
 

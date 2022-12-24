@@ -13,6 +13,8 @@ object Constants {
     const val APARCABICIS_ICON = "aparcabicis_icon"
     const val FUENTES_ICON = "fuentes_icon"
     const val COLOR_BLANCO = "#FFFFFF"
+    const val ID_DATASET_APARCABICIS = "clbxups790gbo27phj46d8ohk"
+    const val ID_DATASET_FUENTES = "clbxumz5r014k28ozsad9kwwb"
 
 }
 

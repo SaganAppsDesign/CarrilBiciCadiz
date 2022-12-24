@@ -1,4 +1,4 @@
-package com.appandroid.sagan.bicicadiz.view.activities
+package com.appandroid.sagan.bicicadiz.ui.view.activities
 
 import android.content.Intent
 import android.os.Bundle
