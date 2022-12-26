@@ -46,10 +46,11 @@ android {
     productFlavors {
         carrilBiciCadiz{
             versionNameSuffix "-cadiz"
+            buildConfigField "String", "TITLE_SPLASH", '"Carril Bici Cádiz"'
         }
         carrilBiciMalaga{
             versionNameSuffix "-malaga"
-            buildConfigField "String", "TITLE_SPLASH", "'Carril Bici Málaga'"
+            buildConfigField "String", "TITLE_SPLASH", '"Carril Bici Málaga"'
         }
     }
 
