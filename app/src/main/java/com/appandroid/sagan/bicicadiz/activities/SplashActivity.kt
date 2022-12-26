@@ -17,9 +17,9 @@ class SplashActivity : AppCompatActivity() {
         binding = ActivityPantallaInicioBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.animationView?.playAnimation()
-        binding.animationView?.repeatCount = 10
-        binding.animationView?.alpha = 0.8F
+        binding.animationView.playAnimation()
+        binding.animationView.repeatCount = 10
+        binding.animationView.alpha = 0.8F
 
         binding.btSiguiente.setOnClickListener{
             val intent = Intent(this, MainActivity::class.java)

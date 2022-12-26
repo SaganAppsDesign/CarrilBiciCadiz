@@ -28,18 +28,28 @@ android {
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
     }
+
     buildTypes {
         debug {
             minifyEnabled true
             shrinkResources = true
             applicationIdSuffix ".debug"
-
         }
-
         release {
             minifyEnabled true
             shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions "version"
+    productFlavors {
+        carrilBiciCadiz{
+            versionNameSuffix "-cadiz"
+        }
+        carrilBiciMalaga{
+            versionNameSuffix "-malaga"
+            BuildConfigField "String", "TITLE_SPLASH", "'Carril Bici Málaga'"
         }
     }
 
