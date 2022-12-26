@@ -49,7 +49,7 @@ android {
         }
         carrilBiciMalaga{
             versionNameSuffix "-malaga"
-            BuildConfigField "String", "TITLE_SPLASH", "'Carril Bici Málaga'"
+            buildConfigField "String", "TITLE_SPLASH", "'Carril Bici Málaga'"
         }
     }
 
