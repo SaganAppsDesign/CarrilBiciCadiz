@@ -1,5 +1,6 @@
 package com.appandroid.sagan.bicicadiz.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +10,7 @@ import com.appandroid.sagan.bicicadiz.databinding.ActivityPantallaInicioBinding
 
 private lateinit var binding : ActivityPantallaInicioBinding
 
+@SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -139,8 +139,8 @@
 
         <ImageView
             android:id="@+id/ivIcon"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:layout_marginStart="54dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
@@ -148,12 +148,12 @@
             app:layout_constraintEnd_toStartOf="@+id/swAparcabicis"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvSecTitle"
-            app:srcCompat="@drawable/parking_bici" />
+            app:srcCompat="@drawable/bicicleta" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/swAparcabicis"
             android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:checked="false"
             android:minHeight="48dp"
             app:layout_constraintBottom_toBottomOf="@+id/ivIcon"
@@ -175,8 +175,8 @@
 
         <ImageView
             android:id="@+id/ivIconFuentes"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_marginStart="39dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="10dp"
@@ -189,7 +189,8 @@
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/swFuentes"
             android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_height="45dp"
+            android:layout_marginBottom="6dp"
             android:checked="false"
             android:minHeight="48dp"
             app:layout_constraintBottom_toBottomOf="parent"
