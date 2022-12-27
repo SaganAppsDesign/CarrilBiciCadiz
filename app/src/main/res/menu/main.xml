@@ -22,13 +22,6 @@
             android:title="Traffic night"
             app:showAsAction="never" />
     </group>
-    <group android:id="@+id/Light" >
-        <item
-            android:id="@+id/light"
-            android:orderInCategory="100"
-            android:title="Light"
-            app:showAsAction="never" />
-    </group>
 </menu>
 
 
