@@ -18,6 +18,20 @@ android {
 }
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('C:\\Users\\david\\AndroidStudioProjects\\CarrilesBiciCadiz\\llave.jks')
+            storePassword 'antorcha'
+            keyAlias 'darenas'
+            keyPassword 'antorcha'
+        }
+        release {
+            storeFile file('C:\\Users\\david\\AndroidStudioProjects\\CarrilesBiciCadiz\\llave.jks')
+            storePassword 'antorcha'
+            keyAlias 'darenas'
+            keyPassword 'antorcha'
+        }
+    }
     compileSdkVersion 32
     defaultConfig {
         applicationId "com.appandroid.sagan.bicicadiz"
@@ -27,6 +41,7 @@ android {
         versionName "1.0.3"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
+        signingConfig signingConfigs.release
     }
 
     buildTypes {
@@ -97,6 +112,8 @@ dependencies {
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.7.1'
     implementation "com.mapbox.navigation:android:2.9.4"
     implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-scalebar-v9:0.5.0'
+    //AdMob
+    implementation 'com.google.android.gms:play-services-ads:20.6.0'
  }
 repositories {
     mavenCentral()
