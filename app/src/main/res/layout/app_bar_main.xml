@@ -28,7 +28,7 @@
                 android:fontFamily="@font/montserrat_alternates"
                 android:text="@string/carril_bici_cadiz"
                 android:textAlignment="center"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/floatButtons"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 

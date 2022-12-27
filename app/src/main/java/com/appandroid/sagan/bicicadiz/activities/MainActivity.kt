@@ -32,6 +32,9 @@ import com.appandroid.sagan.bicicadiz.Constants.PARKING_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_NAME
 import com.appandroid.sagan.bicicadiz.R
 import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
+import com.appandroid.sagan.bicicadiz.fragments.WelcomeInfoFragment
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.Mapbox
@@ -82,8 +85,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-
         activeReceiver()
+        val welcomeDialog = WelcomeInfoFragment()
+        welcomeDialog.show(supportFragmentManager, "infoDialog")
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
@@ -117,10 +121,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
 
                 if(title.isNullOrEmpty()){
                     Toast.makeText(this, getString(R.string.estacionamiento_sin_nombre), Toast.LENGTH_SHORT).show()
-                }
-                else {
-                    Toast.makeText(this, title, Toast.LENGTH_SHORT).show()
                     }
+                else {
+                    Snackbar.make(
+                        findViewById(R.id.activity_main),
+                        title,
+                        BaseTransientBottomBar.LENGTH_SHORT
+                    ).show()
+                   }
             }
             false
         }
@@ -320,10 +328,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         parkingBicis = GeoJsonSource(PARKING_ID, loadJsonFromAsset(APARCABICIS_GEO))
         style.addSource(parkingBicis)
         style.addImage(APARCABICIS_ICON, BitmapFactory.decodeResource(this.resources,
-            R.drawable.parking_bici
+            R.drawable.bicicleta
         ))
         val symbolLayer = SymbolLayer(LAYER_ID, PARKING_ID)
-        symbolLayer.withProperties(iconImage(APARCABICIS_ICON), iconAllowOverlap(false), iconSize(0.3f), iconIgnorePlacement(false))
+        symbolLayer.withProperties(iconImage(APARCABICIS_ICON), iconAllowOverlap(false), iconSize(0.08f), iconIgnorePlacement(false))
         style.addLayer(symbolLayer)
     }
 
@@ -334,7 +342,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             R.drawable.fuente
         ))
         val symbolLayer = SymbolLayer(LAYER_FUENTES_ID, FUENTES_ID)
-        symbolLayer.withProperties(iconImage(FUENTES_ICON), iconAllowOverlap(false), iconSize(0.15f), iconIgnorePlacement(false))
+        symbolLayer.withProperties(iconImage(FUENTES_ICON), iconAllowOverlap(false), iconSize(0.21f), iconIgnorePlacement(false))
         style.addLayer(symbolLayer)
     }
 

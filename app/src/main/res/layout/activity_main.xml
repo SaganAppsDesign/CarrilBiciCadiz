@@ -97,7 +97,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -107,25 +107,25 @@
             android:textColor="@android:color/white"
             android:textSize="10sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/imageView2"
+            app:layout_constraintBottom_toTopOf="@+id/ivImage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/ivImage"
             android:layout_width="62dp"
             android:layout_height="51dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/textView2"
+            app:layout_constraintBottom_toTopOf="@+id/tvSecTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle"
             app:srcCompat="@drawable/carril" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/tvSecTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat_alternates"
@@ -135,25 +135,25 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+            app:layout_constraintTop_toBottomOf="@+id/ivImage" />
 
         <ImageView
             android:id="@+id/ivIcon"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:layout_marginStart="54dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             app:layout_constraintBottom_toTopOf="@+id/tvFuentes"
             app:layout_constraintEnd_toStartOf="@+id/swAparcabicis"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2"
-            app:srcCompat="@drawable/parking_bici" />
+            app:layout_constraintTop_toBottomOf="@+id/tvSecTitle"
+            app:srcCompat="@drawable/bicicleta" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/swAparcabicis"
             android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:checked="false"
             android:minHeight="48dp"
             app:layout_constraintBottom_toBottomOf="@+id/ivIcon"
@@ -163,6 +163,7 @@
             android:id="@+id/tvFuentes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:fontFamily="@font/montserrat_alternates"
             android:text="Fuentes de agua"
             android:textColor="@android:color/white"
@@ -174,8 +175,8 @@
 
         <ImageView
             android:id="@+id/ivIconFuentes"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_marginStart="39dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="10dp"
@@ -188,7 +189,8 @@
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/swFuentes"
             android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_height="45dp"
+            android:layout_marginBottom="6dp"
             android:checked="false"
             android:minHeight="48dp"
             app:layout_constraintBottom_toBottomOf="parent"

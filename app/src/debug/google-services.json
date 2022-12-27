@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "784898527621",
+    "project_id": "carrilbicicadiz-85a72",
+    "storage_bucket": "carrilbicicadiz-85a72.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:784898527621:android:c68ac6a4efe1cbdd81f4ec",
+        "android_client_info": {
+          "package_name": "com.appandroid.sagan.bicicadiz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "784898527621-t5jsmi8a4rtrh0rppn1ibpqe1ot8v6fp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDToYMrEK5RIi-WK0IDe_81DfH1hn2KKyc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "784898527621-t5jsmi8a4rtrh0rppn1ibpqe1ot8v6fp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:784898527621:android:130f55c37fa00e8e81f4ec",
+        "android_client_info": {
+          "package_name": "com.appandroid.sagan.bicicadiz.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "784898527621-t5jsmi8a4rtrh0rppn1ibpqe1ot8v6fp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDToYMrEK5RIi-WK0IDe_81DfH1hn2KKyc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "784898527621-t5jsmi8a4rtrh0rppn1ibpqe1ot8v6fp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
