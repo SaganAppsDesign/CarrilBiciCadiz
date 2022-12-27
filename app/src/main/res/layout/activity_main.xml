@@ -210,7 +210,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         mapbox:adSize="BANNER"
-        mapbox:adUnitId="ca-app-pub-3940256099942544/6300978111" />
+        mapbox:adUnitId="ca-app-pub-9757182277191766/3957873996" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
