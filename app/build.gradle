@@ -5,6 +5,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
     id 'com.google.firebase.firebase-perf'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
@@ -108,8 +109,11 @@ dependencies {
     implementation "com.mapbox.navigation:android:2.9.4"
     implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-scalebar-v9:0.5.0'
     //AdMob
-    implementation 'com.google.android.gms:play-services-ads:20.6.0'
+    implementation 'com.google.android.gms:play-services-ads:21.4.0'
+    //google maps
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation 'com.google.maps.android:android-maps-utils:2.3.0'
  }
-repositories {
-    mavenCentral()
-}
+//repositories {
+//    mavenCentral()
+//}
