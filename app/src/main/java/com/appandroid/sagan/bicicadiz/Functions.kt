@@ -2,6 +2,7 @@ package com.appandroid.sagan.bicicadiz
 
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import com.appandroid.sagan.bicicadiz.fragments.WelcomeInfoFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
@@ -15,3 +16,4 @@ object Functions: AppCompatActivity() {
             .into(this)
     }
 }
+
