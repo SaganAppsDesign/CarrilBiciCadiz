@@ -23,16 +23,34 @@ android {
         applicationId "com.appandroid.sagan.bicicadiz"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 39
+        versionCode 40
         versionName "1.0.3"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
     }
+
     buildTypes {
+        debug {
+            minifyEnabled true
+            shrinkResources = true
+            applicationIdSuffix ".debug"
+        }
         release {
             minifyEnabled true
             shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions "version"
+    productFlavors {
+        carrilBiciCadiz{
+            versionNameSuffix "-cadiz"
+            buildConfigField "String", "TITLE_SPLASH", '"Carril Bici Cádiz"'
+        }
+        carrilBiciMalaga{
+            versionNameSuffix "-malaga"
+            buildConfigField "String", "TITLE_SPLASH", '"Carril Bici Málaga"'
         }
     }
 
