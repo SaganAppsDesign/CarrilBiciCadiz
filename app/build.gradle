@@ -19,12 +19,7 @@ android {
 
 android {
     signingConfigs {
-        debug {
-            storeFile file('C:\\Users\\david\\AndroidStudioProjects\\CarrilesBiciCadiz\\llave.jks')
-            storePassword 'antorcha'
-            keyAlias 'darenas'
-            keyPassword 'antorcha'
-        }
+
         release {
             storeFile file('C:\\Users\\david\\AndroidStudioProjects\\CarrilesBiciCadiz\\llave.jks')
             storePassword 'antorcha'
