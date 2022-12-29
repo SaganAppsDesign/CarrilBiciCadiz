@@ -30,6 +30,7 @@ import com.appandroid.sagan.bicicadiz.Constants.LAYER_FUENTES_ID
 import com.appandroid.sagan.bicicadiz.Constants.LAYER_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_NAME
+import com.appandroid.sagan.bicicadiz.Functions.loadAd
 import com.appandroid.sagan.bicicadiz.R
 import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
 import com.appandroid.sagan.bicicadiz.fragments.WelcomeInfoFragment
@@ -88,6 +89,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         activeReceiver()
         val welcomeDialog = WelcomeInfoFragment()
         welcomeDialog.show(supportFragmentManager, "infoDialog")
+        loadAd(binding)
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
@@ -161,11 +163,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             loadMap(TRAFFIC_NIGHT)
             return true
         }
-        if (id == R.id.light) {
-            loadCustomMap()
-            return true
-        }
-
         return super.onOptionsItemSelected(item)
     }
 
@@ -199,22 +196,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                 loadFuentes(style)
             }
          }
-    }
-
-    private fun loadCustomMap() {
-        mapboxMap!!.setStyle(Builder().fromUri("mapbox://styles/darenas/ck0xul2h401cx1cmgkpovc27m")) {
-                style ->
-            enableLocationComponent(style)
-            loadCarriles(style)
-            switchAparcaBicis(style)
-            switchFuentes(style)
-            if(binding.swAparcabicis.isChecked){
-                loadAparcaBicis(style)
-            }
-            if(binding.swFuentes.isChecked){
-                loadFuentes(style)
-            }
-        }
     }
 
     private fun enableLocationComponent(style: Style) {
