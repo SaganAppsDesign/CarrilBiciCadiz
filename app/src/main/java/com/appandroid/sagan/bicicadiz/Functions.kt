@@ -68,7 +68,7 @@ object Functions: AppCompatActivity() {
         mMap.moveCamera(CameraUpdateFactory.newLatLng(cadiz))
 
         googleMap.apply {
-            mapType = GoogleMap.MAP_TYPE_SATELLITE
+            mapType = GoogleMap.MAP_TYPE_HYBRID
             moveCamera(CameraUpdateFactory.zoomTo(13F))
             isTrafficEnabled = true
             mMap.setPadding(0,150,0,150)
@@ -83,7 +83,7 @@ object Functions: AppCompatActivity() {
     fun loadCarrilBici(mMap: GoogleMap, context: Context){
         val carrilBici = GeoJsonLayer(mMap, R.raw.carril_bici, context)
         val styleCarril = carrilBici.defaultLineStringStyle
-        styleCarril.color = Color.parseColor("#329221")
+        styleCarril.color = Color.parseColor("#F1C40F")
         styleCarril.width = 15F
         carrilBici.addLayerToMap()
     }

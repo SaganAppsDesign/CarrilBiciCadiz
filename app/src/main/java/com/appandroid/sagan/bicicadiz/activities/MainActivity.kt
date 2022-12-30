@@ -52,7 +52,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
         val welcomeDialog = WelcomeInfoFragment()
         welcomeDialog.show(supportFragmentManager, "infoDialog")
         loadAd(binding)
-
         activeReceiver()
     }
 
@@ -80,7 +79,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
             return true
         }
         if (id == R.id.satelite) {
-            mMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
+            mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
             return true
         }
         if (id == R.id.terrain) {

@@ -65,7 +65,7 @@
 
         <ImageView
             android:id="@+id/ivImage"
-            android:layout_width="62dp"
+            android:layout_width="55dp"
             android:layout_height="51dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
@@ -99,7 +99,7 @@
             app:layout_constraintEnd_toStartOf="@+id/swAparcabicis"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvSecTitle"
-            app:srcCompat="@drawable/bicicleta" />
+            app:srcCompat="@drawable/bicicleta_hq" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/swAparcabicis"
@@ -135,7 +135,7 @@
             app:layout_constraintEnd_toStartOf="@+id/swFuentes"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvFuentes"
-            mapbox:srcCompat="@drawable/fuente" />
+            mapbox:srcCompat="@drawable/fuente_hq"/>
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/swFuentes"
