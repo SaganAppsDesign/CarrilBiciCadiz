@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <group android:id="@+id/Streets" >
+    <group android:id="@+id/Normal" >
         <item
-            android:id="@+id/streets"
+            android:id="@+id/normal"
             android:orderInCategory="100"
-            android:title="Streets"
+            android:title="Normal"
             app:showAsAction="never" />
         </group>
-    <group android:id="@+id/Satellite_streets" >
+    <group android:id="@+id/Satelite" >
         <item
-            android:id="@+id/satellite_streets"
+            android:id="@+id/satelite"
             android:orderInCategory="100"
-            android:title="Satellite Streets"
+            android:title="Satélite"
             app:showAsAction="never" />
     </group>
-    <group android:id="@+id/Traffic" >
+    <group android:id="@+id/Terrain" >
         <item
-            android:id="@+id/traffic"
+            android:id="@+id/terrain"
             android:orderInCategory="100"
-            android:title="Traffic night"
+            android:title="Terreno"
             app:showAsAction="never" />
     </group>
 </menu>

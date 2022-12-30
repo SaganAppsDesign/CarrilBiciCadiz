@@ -4,6 +4,7 @@
     package="com.appandroid.sagan.bicicadiz">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
