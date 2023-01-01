@@ -2,9 +2,11 @@ package com.appandroid.sagan.bicicadiz
 
 import android.content.Context
 import android.graphics.Color
+
 import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import com.appandroid.sagan.bicicadiz.activities.MarkerItem
 import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -15,9 +17,13 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.maps.android.clustering.ClusterManager
+
 import com.google.maps.android.data.geojson.GeoJsonLayer
+import com.google.maps.android.data.geojson.GeoJsonPoint
 import com.google.maps.android.data.geojson.GeoJsonPointStyle
+import com.google.maps.android.geometry.Point
+
 
 object Functions: AppCompatActivity() {
 
@@ -75,8 +81,9 @@ object Functions: AppCompatActivity() {
             uiSettings.isZoomControlsEnabled = true
             uiSettings.isCompassEnabled = true
         }
+
         loadCarrilBici(mMap, context)
-        loadAparcaBicis(mMap, context, binding)
+//        loadAparcaBicis(mMap, context, binding)
         loadFuentes(mMap, context, binding)
     }
 
@@ -88,24 +95,50 @@ object Functions: AppCompatActivity() {
         carrilBici.addLayerToMap()
     }
 
-    fun loadAparcaBicis(mMap: GoogleMap, context: Context, binding: ActivityMainBinding){
+    fun loadAparcaBicis(
+        mMap: GoogleMap, context: Context, binding: ActivityMainBinding,
+        clusterManager: ClusterManager<MarkerItem>? = null){
         val aparcabicis = GeoJsonLayer(mMap, R.raw.aparcabicis, context)
+            mMap.setOnCameraMoveListener {
+            val zoomLevel = mMap.cameraPosition.zoom
+            if(zoomLevel > 15){
 
-        for (feature in aparcabicis.features) {
-            if (feature.getProperty("name") != null) {
-                val name = feature.getProperty("name")
                 val pointIcon = BitmapDescriptorFactory.fromResource(R.drawable.bicicleta)
-                val pointStyle = GeoJsonPointStyle()
-                pointStyle.icon = pointIcon
-                pointStyle.title = name
-                feature.pointStyle = pointStyle
-            }
-            binding.swAparcabicis.setOnCheckedChangeListener{_, isChecked ->
-                if (isChecked) {
-                    aparcabicis.addLayerToMap()
-                } else {
-                    aparcabicis.removeLayerFromMap()
+                for (feature in aparcabicis.features) {
+                    if (feature.getProperty("name") != null) {
+                        val name = feature.getProperty("name")
+
+                        val pointStyle = GeoJsonPointStyle()
+                        pointStyle.icon = pointIcon
+                        pointStyle.title = name
+                        feature.pointStyle = pointStyle
+                    }
                 }
+            } else {
+                val pointIcon = BitmapDescriptorFactory.fromResource(R.drawable.bicicleta)
+                for (feature in aparcabicis.features) {
+                    if (feature.getProperty("name") != null) {
+                        val name = feature.getProperty("name")
+//                        val pointStyle = GeoJsonPointStyle()
+//                        pointStyle.icon = pointIcon
+//                        pointStyle.title = name
+//                        feature.pointStyle = pointStyle
+
+                        val point = feature.geometry as GeoJsonPoint
+                        val latLng = LatLng(point.coordinates.latitude, point.coordinates.longitude)
+                        Log.i("coordenadas","$latLng")
+                        val offsetItem = MarkerItem(latLng.latitude, latLng.longitude, "Title $name", "Snippet")
+                        clusterManager?.addItem(offsetItem)
+                    }
+                }
+            }
+        }
+
+        binding.swAparcabicis.setOnCheckedChangeListener{_, isChecked ->
+            if (isChecked) {
+                aparcabicis.addLayerToMap()
+            } else {
+                aparcabicis.removeLayerFromMap()
             }
         }
     }

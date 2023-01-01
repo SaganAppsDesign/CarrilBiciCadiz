@@ -9,6 +9,7 @@ import android.location.Location
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -23,17 +24,23 @@ import com.appandroid.sagan.bicicadiz.Functions.loadAd
 import com.appandroid.sagan.bicicadiz.R
 import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
 import com.appandroid.sagan.bicicadiz.fragments.WelcomeInfoFragment
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.clustering.ClusterManager
+import com.google.maps.android.data.geojson.GeoJsonLayer
+import com.google.maps.android.data.geojson.GeoJsonPoint
+import com.google.maps.android.data.geojson.GeoJsonPointStyle
 
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var mMap: GoogleMap
+    private lateinit var clusterManager: ClusterManager<MarkerItem>
+
 
     private var br: BroadcastReceiver = ConnectionReceiver()
 
@@ -55,11 +62,36 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
         activeReceiver()
     }
 
+    @SuppressLint("PotentialBehaviorOverride")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         enableMyLocation()
         Functions.initMap(mMap, googleMap, binding, this)
-     }
+
+        clusterManager = ClusterManager(this, mMap)
+        mMap.setOnCameraIdleListener(clusterManager)
+        mMap.setOnMarkerClickListener(clusterManager)
+        val aparcabicis = GeoJsonLayer(mMap, R.raw.aparcabicis, this)
+
+                val pointIcon = BitmapDescriptorFactory.fromResource(R.drawable.bicicleta)
+                for (feature in aparcabicis.features) {
+                    if (feature.getProperty("name") != null) {
+                        val name = feature.getProperty("name")
+//                        val pointStyle = GeoJsonPointStyle()
+//                        pointStyle.icon = pointIcon
+//                        pointStyle.title = name
+//                        feature.pointStyle = pointStyle
+
+                        val point = feature.geometry as GeoJsonPoint
+                        val latLng = LatLng(point.coordinates.latitude, point.coordinates.longitude)
+                        Log.i("coordenadas","$latLng")
+                        val offsetItem = MarkerItem(latLng.latitude, latLng.longitude, "Title $name", "Snippet")
+                        clusterManager.addItem(offsetItem)
+                    }
+                }
+            }
+
+
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {}
