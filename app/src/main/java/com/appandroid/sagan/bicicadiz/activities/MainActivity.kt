@@ -106,9 +106,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
                     .tilt(0.0)
                     .bearing(0.0)
                     .build()
+
             mapboxMap.animateCamera(CameraUpdateFactory
                     .newCameraPosition(position), 5000)
         }
+
 
         binding.zoomTolocation.setOnClickListener{
            locationComponent!!.cameraMode = CameraMode.TRACKING
@@ -216,7 +218,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
             locationComponent!!.activateLocationComponent(locationComponentActivationOptions)
 
             if (ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
                 return
             }
