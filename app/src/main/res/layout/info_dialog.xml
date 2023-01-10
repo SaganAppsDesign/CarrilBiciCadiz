@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="24dp"
@@ -19,6 +19,7 @@
         android:textColor="@android:color/black"
         android:textSize="25sp"
         android:textStyle="bold"
+        android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/ivImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,14 +41,14 @@
 
     <TextView
         android:id="@+id/tvSecTitle"
-        android:layout_width="303dp"
-        android:layout_height="wrap_content"
+        android:layout_width="281dp"
+        android:layout_height="61dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/background_title_info"
         android:fontFamily="@font/montserrat_alternates"
-        android:padding="5dp"
+        android:padding="10dp"
         android:text="@string/title_info"
         android:textAlignment="center"
         android:textColor="@android:color/black"
@@ -59,19 +60,39 @@
 
     <TextView
         android:id="@+id/tvParagraph"
-        android:background="@drawable/background_title_info"
-        android:layout_width="303dp"
-        android:layout_height="wrap_content"
+        android:layout_width="281dp"
+        android:layout_height="128dp"
         android:layout_marginStart="54dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="54dp"
+        android:background="@drawable/background_title_info"
         android:fontFamily="@font/montserrat_alternates"
         android:text="@string/points_info"
         android:textAlignment="center"
         android:textColor="@android:color/black"
-        android:textSize="18sp"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSecTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/tvSecTitle"/>
+
+    <TextView
+        android:id="@+id/tvContact"
+        android:layout_width="281dp"
+        android:layout_height="68dp"
+        android:layout_marginStart="54dp"
+        android:layout_marginEnd="54dp"
+        android:autoLink="email"
+        android:background="@drawable/background_title_info"
+        android:fontFamily="@font/montserrat_alternates"
+        android:padding="5dp"
+        android:text="@string/contact_info"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvParagraph"
+        app:layout_constraintVertical_bias="0.05" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

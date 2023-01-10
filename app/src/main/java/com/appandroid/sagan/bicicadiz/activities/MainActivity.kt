@@ -9,7 +9,6 @@ import android.graphics.Color
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.animation.BounceInterpolator
@@ -31,13 +30,9 @@ import com.appandroid.sagan.bicicadiz.Constants.LAYER_FUENTES_ID
 import com.appandroid.sagan.bicicadiz.Constants.LAYER_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_ID
 import com.appandroid.sagan.bicicadiz.Constants.PARKING_LOCATION_NAME
-import com.appandroid.sagan.bicicadiz.Functions.loadAd
 import com.appandroid.sagan.bicicadiz.R
 import com.appandroid.sagan.bicicadiz.databinding.ActivityMainBinding
 import com.appandroid.sagan.bicicadiz.fragments.WelcomeInfoFragment
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.LoadAdError
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.mapbox.android.core.permissions.PermissionsListener
@@ -93,7 +88,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         activeReceiver()
         val welcomeDialog = WelcomeInfoFragment()
         welcomeDialog.show(supportFragmentManager, "infoDialog")
-        loadAd(binding)
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
