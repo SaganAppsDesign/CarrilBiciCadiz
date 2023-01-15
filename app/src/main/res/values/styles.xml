@@ -29,8 +29,13 @@
         <item name="tint">@color/floatButtons</item>
     </style>
 
-    <style name="AlertDialogCustom" parent="@android:style/Theme.Panel">
-        <item name="android:background">@color/colorPrimary</item>
+    <style name="AlertDialogCustom" parent="@android:style/Theme.Material.Dialog">
+        <item name="android:background">@color/colorPrimaryDark</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">#4CAF50</item>
+        <item name="android:headerDividersEnabled">true</item>
     </style>
 
 
