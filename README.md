@@ -1,11 +1,11 @@
 # CarrilBiciCadiz 🚲🚲🚲
-- Android.
-- Kotlin. 
-- DataBinding.
-- Mapbox sdk.
-- Firebase Crashlytics, Performance.
-- Lottie.
-- Geojson.
+- Android
+- Kotlin 
+- DataBinding
+- Mapbox sdk
+- Firebase Crashlytics, Performance
+- Lottie
+- Geojson
 
 Play Store
 
